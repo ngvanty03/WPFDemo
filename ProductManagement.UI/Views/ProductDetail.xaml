@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Closing="Window_Closing" WindowStartupLocation="CenterOwner"        
         ResizeMode="NoResize"
-        Title="Product Detail" Height="350" Width="550"
+        Title="Product Detail" Height="400" Width="550"
         FocusManager.FocusedElement="{Binding ElementName=txtSKU}">
     <Grid  Margin="0,30,0,0" >
         <Grid.ColumnDefinitions>
@@ -22,8 +22,7 @@
             <RowDefinition Height="40"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="40"></RowDefinition>
-            <RowDefinition Height="40"></RowDefinition>
-            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>            
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <TextBlock  Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" 
@@ -69,7 +68,7 @@ Text="Description:" VerticalAlignment="Center"/>
             <Button IsDefault="True" Command="{Binding SaveCommand}" TabIndex="6" Height="30" Width="70" Content="Save" Margin="10,0,0,0"></Button>
             <Button IsCancel="True" Command="{Binding CloseCommand}" TabIndex="7" Height="30" Width="70" Content="Cancel" Margin="15,0,0,0"></Button>
         </StackPanel>
-        <TextBlock Margin="10,10,0,0" Grid.Row="5" Grid.Column="1" Foreground="Red" FontSize="18" FontWeight="SemiBold"
-                 Grid.ColumnSpan="3" Text="{Binding ErrorMessage}"></TextBlock>
+        <TextBlock Margin="10,10,0,0" Grid.Row="5" Grid.Column="1" TextWrapping="WrapWithOverflow" Foreground="Red" FontSize="18" FontWeight="SemiBold"
+                 Grid.ColumnSpan="4" Text="{Binding ErrorMessage}"></TextBlock>
     </Grid>
 </Window>

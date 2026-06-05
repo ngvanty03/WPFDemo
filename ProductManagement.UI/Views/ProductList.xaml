@@ -16,6 +16,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Label Grid.Row="0" Grid.Column="0"
@@ -39,8 +40,12 @@
             <Button Command="{Binding SearchCommand}" VerticalAlignment="Center" HorizontalAlignment="Left" Content="Search" Width="80"></Button>
             <Button Command="{Binding ClearCommand}" Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="Clear" Width="80"></Button>
         </StackPanel>
-        <DataGrid  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" Margin="0,40,0,0"
+        <Button Command="{Binding AddNewCommand}" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" 
+                Width="70" HorizontalAlignment="Left" Height="30" Content="Add new"
+                Margin="10,20,0,0"></Button>
+        <DataGrid  Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Margin="0,4,0,0"
                   CanUserAddRows="False"
+                   IsReadOnly="True"
                    EnableRowVirtualization="True" VirtualizingPanel.IsVirtualizing="True"
                    VirtualizingPanel.VirtualizationMode="Recycling"
                    ItemsSource="{Binding Products}" AutoGenerateColumns="False">
@@ -64,7 +69,7 @@
             <DataGrid.Columns>
                 <DataGridTextColumn ElementStyle="{StaticResource CenterTextStyle}" Width="60" Header="SKU" Binding="{Binding SKU}"></DataGridTextColumn>
                 <DataGridTextColumn ElementStyle="{StaticResource CenterTextStyle}" Width="*" Header="Name" Binding="{Binding Name}"></DataGridTextColumn>
-                <DataGridCheckBoxColumn ElementStyle="{StaticResource CenterCheckBoxStyle}" Width="80" Header="Is Active" Binding="{Binding IsActive}"></DataGridCheckBoxColumn>
+                <DataGridCheckBoxColumn ElementStyle="{StaticResource CenterCheckBoxStyle}" Width="80" Header="Is Active" IsReadOnly="True" Binding="{Binding IsActive}"></DataGridCheckBoxColumn>
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

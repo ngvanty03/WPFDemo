@@ -60,15 +60,42 @@ namespace ProductManagement.UI.ViewModels
             Categories = new ObservableCollection<ProductCategoryDTO>(tempList);
         }
         private async Task LoadProductAsync() {
+            if (_productId < 1)
+            {
+                Product = new ProductDTO();
+                return;
+            }
             Product = await _productService.GetByIdAsync(_productId);            
         }
         private async Task SaveProductAsync()
-        { 
-            if(_productId>0)
-                await _productService.UpdateAsync(Product);
-            else
-                await _productService.InsertAsync(Product);
-            Close();
+        {
+            try
+            {
+                //validate input
+                if (string.IsNullOrEmpty(Product.SKU))
+                {
+                    ErrorMessage = "Please input the product SKU";
+                    return;
+                }
+                if (Product.CategoryId < 1)
+                {
+                    ErrorMessage = "Please select the product Category";
+                    return;
+                }
+                if (string.IsNullOrEmpty(Product.Name))
+                {
+                    ErrorMessage = "Please input the product name";
+                    return;
+                }
+                if (_productId > 0)
+                    await _productService.UpdateAsync(Product);
+                else
+                    await _productService.InsertAsync(Product);
+                Close();
+            }
+            catch (Exception ex) { 
+                ErrorMessage = ex.Message;
+            }
         }        
         public void Close()
         {

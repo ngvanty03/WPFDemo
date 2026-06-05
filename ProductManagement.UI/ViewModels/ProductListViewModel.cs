@@ -23,6 +23,7 @@ namespace ProductManagement.UI.ViewModel
         public ICommand SearchCommand { get; set; }
         public ICommand ClearCommand { get; set; }
         public ICommand EditCommand { get; set; }
+        public ICommand AddNewCommand { get; set; }
         #endregion
         public ProductListViewModel(IProductService productService, IProductCategoryService productCateService)
         {
@@ -31,6 +32,7 @@ namespace ProductManagement.UI.ViewModel
             SearchCommand = new AsyncRelayCommand(LoadProductAsyn);
             ClearCommand = new AsyncRelayCommand(ClearAsyn);
             EditCommand = new AsyncRelayCommand<ProductDTO>(ShowProductDetail);
+            AddNewCommand = new AsyncRelayCommand<ProductDTO>(ShowProductDetail);
             IsLoading = true;
         }
 

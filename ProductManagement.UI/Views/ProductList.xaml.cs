@@ -1,4 +1,4 @@
-﻿using ProductManagement.Application;
+using ProductManagement.Application;
 using ProductManagement.UI.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -35,6 +35,7 @@ namespace ProductManagement.UI.Views
             {
                 await viewModel.InitDataAsync();
             }
+            txtSKU.Focus();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿<Application x:Class="ProductManagement.UI.App"
+<Application x:Class="ProductManagement.UI.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:ProductManagement.UI"
@@ -23,6 +23,7 @@
         <Style x:Key="CenterCheckBoxStyle" TargetType="CheckBox">
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="IsHitTestVisible" Value="False"/>
         </Style>
         <Style x:Key="CustomDataGridStyle" TargetType="DataGrid">
 

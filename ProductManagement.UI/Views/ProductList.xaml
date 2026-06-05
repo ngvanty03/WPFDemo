@@ -43,17 +43,24 @@
                   CanUserAddRows="False" CanUserDeleteRows="False"
                   CanUserResizeColumns="False"
                   CanUserResizeRows="False"    
+                   IsReadOnly="True"
                    SelectionMode="Single"
                    EnableRowVirtualization="True" VirtualizingPanel.IsVirtualizing="True"
                    VirtualizingPanel.VirtualizationMode="Recycling"
                    ItemsSource="{Binding Products}" AutoGenerateColumns="False">
-            <DataGrid.Resources>
+            <DataGrid.Resources>                
+                <Style x:Key="CenterTextStyle" TargetType="TextBlock">
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                </Style>
+                <Style x:Key="CenterCheckBoxStyle" TargetType="CheckBox">
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                </Style>
                 <Style x:Key="HoverButtonStyle" TargetType="Button">
                     <Setter Property="Cursor" Value="Hand"/>
                     <Setter Property="Background" Value="#F0F0F0"/>
                     <Setter Property="BorderBrush" Value="#CCCCCC"/>
                     <Setter Property="Padding" Value="8,3"/>
-
                     <Style.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Background" Value="#DDEEFF"/>
@@ -64,11 +71,11 @@
             </DataGrid.Resources>
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
-                    <Setter Property="IsHitTestVisible" Value="False"/>
+                    <Setter Property="Focusable" Value="False"/>
+                    <Setter Property="IsTabStop" Value="False"/>
                 </Style>
             </DataGrid.RowStyle>
-            <DataGrid.Style>
-                
+            <DataGrid.Style>                
                 <Style TargetType="DataGrid">
                     <Setter Property="Visibility" Value="Visible"/>
                     <Style.Triggers>
@@ -79,9 +86,9 @@
                 </Style>
             </DataGrid.Style>
             <DataGrid.Columns>
-                <DataGridTextColumn Width="60" Header="SKU" Binding="{Binding SKU}"></DataGridTextColumn>
-                <DataGridTextColumn Width="*" Header="Name" Binding="{Binding Name}"></DataGridTextColumn>
-                <DataGridCheckBoxColumn Width="80" Header="Is Active" Binding="{Binding IsActive}"></DataGridCheckBoxColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource CenterTextStyle}" Width="60" Header="SKU" Binding="{Binding SKU}"></DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource CenterTextStyle}" Width="*" Header="Name" Binding="{Binding Name}"></DataGridTextColumn>
+                <DataGridCheckBoxColumn ElementStyle="{StaticResource CenterCheckBoxStyle}" Width="80" Header="Is Active" Binding="{Binding IsActive}"></DataGridCheckBoxColumn>
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

@@ -1,4 +1,6 @@
 ﻿using ProductManagement.Application;
+using ProductManagement.UI.ViewModel;
+using ProductManagement.UI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,12 +24,25 @@ namespace ProductManagement.UI.Views
     {
         private readonly IProductCategoryService _productCategoryService;
         private readonly IProductService _productService;
-        public ProductDetail(IProductCategoryService productCategoryService, IProductService productService)
+        public ProductDetail(int productId,IProductCategoryService productCategoryService, IProductService productService)
         {
             InitializeComponent();
             _productCategoryService = productCategoryService;
             _productService = productService;
+            var viewModel=new ProductDetailViewModel(productId,productService, productCategoryService);
+            this.Loaded += ProductDetail_Loaded;
+            viewModel.CloseAction = new Action(this.Close);
+            this.DataContext = viewModel;
         }
+
+        private async void ProductDetail_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (this.DataContext is ProductDetailViewModel viewModel)
+            {
+                await viewModel.InitDataAsync();
+            }
+        }
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             e.Cancel = false;

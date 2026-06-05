@@ -47,7 +47,7 @@ namespace ProductManagement.Infrastructure
         /// <returns>true/false</returns>
         public async Task<bool> UpdateAsync(ProductDTO product)
         {
-            var sql = @"Update Product set [CategoryId]=@CategoryId,[SKU]=@CategoryId,[Name]=@Name,
+            var sql = @"Update Product set [CategoryId]=@CategoryId,[SKU]=@SKU,[Name]=@Name,
                         [IsActive]=@IsActive,[Description]=@Description where Id=@Id";
             using (var connection = new SqlConnection(_DBOptions.DBConnectionString))
             {

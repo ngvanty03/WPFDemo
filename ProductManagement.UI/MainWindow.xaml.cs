@@ -1,0 +1,37 @@
+﻿using ProductManagement.Application;
+using ProductManagement.Infrastructure;
+using ProductManagement.UI.Views;
+using System.Configuration;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+namespace ProductManagement.UI
+{
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        public MainWindow()
+        {
+            InitializeComponent();
+            var dbOptions = new DatabaseOptions
+            {
+                DBConnectionString = ConfigurationManager.AppSettings["DBConnectionString"] ?? ""
+            };
+            var productRepos = new ProductRepository(dbOptions);
+            var productCateRepos = new ProductCategoryRepository(dbOptions);
+            var productService = new ProductService(productRepos);
+            var productCateService = new ProductCategoryService(productCateRepos);
+            MainContent.Content = new ProductList(productService, productCateService);
+        }
+    }
+}

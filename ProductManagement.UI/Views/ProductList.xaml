@@ -24,7 +24,7 @@
                Content="Category:"></Label>
         <ComboBox Grid.Row="0" Grid.Column="1"  
                ItemsSource="{Binding Categories}"
-              SelectedValue="{Binding SelectedCategoryId, Mode=TwoWay}"
+              SelectedValue="{Binding SelectedCategoryId, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
               SelectedValuePath="Id"
               DisplayMemberPath="Name"
                HorizontalAlignment="Stretch"
@@ -34,10 +34,85 @@
            HorizontalAlignment="Right"
            VerticalAlignment="Center"
            Content="SKU:"></Label>
-        <TextBox Grid.Row="0" Width="120" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="3" ></TextBox>
+        <TextBox Grid.Row="0" Width="120" Text="{Binding SearchSKU,Mode=TwoWay,UpdateSourceTrigger=LostFocus}" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="3" ></TextBox>
         <StackPanel Margin="10,5,0,0" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Orientation="Horizontal">
-            <Button VerticalAlignment="Center" HorizontalAlignment="Left" Content="Search" Width="80"></Button>
-            <Button Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="Clear" Width="80"></Button>
+            <Button Command="{Binding SearchCommand}" VerticalAlignment="Center" HorizontalAlignment="Left" Content="Search" Width="80"></Button>
+            <Button Command="{Binding ClearCommand}" Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="Clear" Width="80"></Button>
         </StackPanel>
+        <DataGrid  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" Margin="0,40,0,0"
+                  CanUserAddRows="False" CanUserDeleteRows="False"
+                  CanUserResizeColumns="False"
+                  CanUserResizeRows="False"    
+                   SelectionMode="Single"
+                   EnableRowVirtualization="True" VirtualizingPanel.IsVirtualizing="True"
+                   VirtualizingPanel.VirtualizationMode="Recycling"
+                   ItemsSource="{Binding Products}" AutoGenerateColumns="False">
+            <DataGrid.Resources>
+                <Style x:Key="HoverButtonStyle" TargetType="Button">
+                    <Setter Property="Cursor" Value="Hand"/>
+                    <Setter Property="Background" Value="#F0F0F0"/>
+                    <Setter Property="BorderBrush" Value="#CCCCCC"/>
+                    <Setter Property="Padding" Value="8,3"/>
+
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#DDEEFF"/>
+                            <Setter Property="BorderBrush" Value="#5599FF"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="IsHitTestVisible" Value="False"/>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.Style>
+                
+                <Style TargetType="DataGrid">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding FoundData}" Value="False">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.Style>
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="60" Header="SKU" Binding="{Binding SKU}"></DataGridTextColumn>
+                <DataGridTextColumn Width="*" Header="Name" Binding="{Binding Name}"></DataGridTextColumn>
+                <DataGridCheckBoxColumn Width="80" Header="Is Active" Binding="{Binding IsActive}"></DataGridCheckBoxColumn>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Width="60" Content="Edit" Margin="10,0,0,0" Command="{Binding DataContext.EditProductCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+CommandParameter="{Binding}" Style="{StaticResource HoverButtonStyle}"></Button>
+                                <Button Width="60" Content="Delete" CommandParameter="{Binding}" Margin="10,0,0,0" Command="{Binding DataContext.DeleteProductCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" Style="{StaticResource HoverButtonStyle}"></Button>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+            
+        </DataGrid>
+        <TextBlock Margin="0,50,0,0" Text="there is no data matching the entered criteria" 
+           Grid.Row="2" 
+           Grid.Column="0" 
+           Grid.ColumnSpan="4" HorizontalAlignment="Center"
+           VerticalAlignment="Top"
+           Foreground="Gray"
+           FontSize="16">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding FoundData}" Value="False">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
     </Grid>
 </UserControl>

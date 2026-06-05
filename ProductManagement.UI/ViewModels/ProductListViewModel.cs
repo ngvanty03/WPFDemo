@@ -24,6 +24,7 @@ namespace ProductManagement.UI.ViewModel
             _productCateService = productCateService;
             SearchCommand = new AsyncRelayCommand(LoadProductAsyn);
             ClearCommand = new AsyncRelayCommand(ClearAsyn);
+            IsLoading = true;
         }
 
         #region "Bindding Properties"
@@ -36,7 +37,10 @@ namespace ProductManagement.UI.ViewModel
         [ObservableProperty]
         private ObservableCollection<ProductDTO> _products = new();
         [ObservableProperty]
-        private bool _foundData;
+        private bool _foundData=true;
+        // Tracks if the search service is actively running
+        [ObservableProperty]
+        private bool _isLoading=false;
         #endregion
 
         #region "Command"
@@ -46,7 +50,7 @@ namespace ProductManagement.UI.ViewModel
 
         #region "Functions"
         public async Task InitDataAsync()
-        {
+        {        
             await InitCategoryAsyn();
             await LoadProductAsyn();
         }
@@ -64,9 +68,12 @@ namespace ProductManagement.UI.ViewModel
             Categories = new ObservableCollection<ProductCategoryDTO>(tempList);
         }
         private async Task LoadProductAsyn() {
+            IsLoading = true;
+            //await Task.Delay(50000);
             var result = await _productService.GetAllAsync(SelectedCategoryId, SearchSKU);            
             Products = new ObservableCollection<ProductDTO>(result);
             FoundData = Products.Count > 0;
+            IsLoading = false;
         }
         private async Task ClearAsyn() { 
             SelectedCategoryId = 0;

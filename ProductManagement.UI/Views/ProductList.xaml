@@ -40,35 +40,11 @@
             <Button Command="{Binding ClearCommand}" Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="Clear" Width="80"></Button>
         </StackPanel>
         <DataGrid  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" Margin="0,40,0,0"
-                  CanUserAddRows="False" CanUserDeleteRows="False"
-                  CanUserResizeColumns="False"
-                  CanUserResizeRows="False"    
-                   IsReadOnly="True"
-                   SelectionMode="Single"
+                  CanUserAddRows="False"
                    EnableRowVirtualization="True" VirtualizingPanel.IsVirtualizing="True"
                    VirtualizingPanel.VirtualizationMode="Recycling"
                    ItemsSource="{Binding Products}" AutoGenerateColumns="False">
-            <DataGrid.Resources>                
-                <Style x:Key="CenterTextStyle" TargetType="TextBlock">
-                    <Setter Property="VerticalAlignment" Value="Center"/>
-                </Style>
-                <Style x:Key="CenterCheckBoxStyle" TargetType="CheckBox">
-                    <Setter Property="VerticalAlignment" Value="Center"/>
-                    <Setter Property="HorizontalAlignment" Value="Center"/>
-                </Style>
-                <Style x:Key="HoverButtonStyle" TargetType="Button">
-                    <Setter Property="Cursor" Value="Hand"/>
-                    <Setter Property="Background" Value="#F0F0F0"/>
-                    <Setter Property="BorderBrush" Value="#CCCCCC"/>
-                    <Setter Property="Padding" Value="8,3"/>
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="#DDEEFF"/>
-                            <Setter Property="BorderBrush" Value="#5599FF"/>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </DataGrid.Resources>
+            
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <Setter Property="Focusable" Value="False"/>
@@ -94,8 +70,8 @@
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
                                 <Button Width="60" Content="Edit" Margin="10,0,0,0" Command="{Binding DataContext.EditProductCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
-CommandParameter="{Binding}" Style="{StaticResource HoverButtonStyle}"></Button>
-                                <Button Width="60" Content="Delete" CommandParameter="{Binding}" Margin="10,0,0,0" Command="{Binding DataContext.DeleteProductCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" Style="{StaticResource HoverButtonStyle}"></Button>
+CommandParameter="{Binding}" ></Button>
+                                <Button Width="60" Content="Delete" CommandParameter="{Binding}" Margin="10,0,0,0" Command="{Binding DataContext.DeleteProductCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" ></Button>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -115,6 +91,22 @@ CommandParameter="{Binding}" Style="{StaticResource HoverButtonStyle}"></Button>
                     <Setter Property="Visibility" Value="Collapsed"/>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding FoundData}" Value="False">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+        <TextBlock Margin="0,50,0,0" Text="Loading ..." 
+               Grid.Row="2" 
+Grid.Column="0" 
+Grid.ColumnSpan="4" HorizontalAlignment="Center"
+VerticalAlignment="Top" Foreground="#5599FF" FontSize="18" FontWeight="SemiBold">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsLoading}" Value="True">
                             <Setter Property="Visibility" Value="Visible"/>
                         </DataTrigger>
                     </Style.Triggers>

@@ -2,28 +2,35 @@
 using CommunityToolkit.Mvvm.Input;
 using ProductManagement.Application;
 using ProductManagement.DTO;
+using ProductManagement.UI.Views;
+using ProductManagement.UI.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Automation.Text;
 using System.Windows.Input;
-
 namespace ProductManagement.UI.ViewModel
 {
     public partial class ProductListViewModel : ObservableObject
     {
         private readonly IProductService _productService;
         private readonly IProductCategoryService _productCateService;
-
+        #region "Command"
+        public ICommand SearchCommand { get; set; }
+        public ICommand ClearCommand { get; set; }
+        public ICommand EditCommand { get; set; }
+        #endregion
         public ProductListViewModel(IProductService productService, IProductCategoryService productCateService)
         {
             _productService = productService;
             _productCateService = productCateService;
             SearchCommand = new AsyncRelayCommand(LoadProductAsyn);
             ClearCommand = new AsyncRelayCommand(ClearAsyn);
+            EditCommand = new AsyncRelayCommand<ProductDTO>(ShowProductDetail);
             IsLoading = true;
         }
 
@@ -41,12 +48,7 @@ namespace ProductManagement.UI.ViewModel
         // Tracks if the search service is actively running
         [ObservableProperty]
         private bool _isLoading=false;
-        #endregion
-
-        #region "Command"
-        public ICommand SearchCommand { get; set; }
-        public ICommand ClearCommand { get; set; }
-        #endregion
+        #endregion      
 
         #region "Functions"
         public async Task InitDataAsync()
@@ -79,6 +81,16 @@ namespace ProductManagement.UI.ViewModel
             SelectedCategoryId = 0;
             SearchSKU = "";
             await LoadProductAsyn();
+        }
+        public async Task ShowProductDetail(ProductDTO product) 
+        { 
+            var subForm= new ProductDetail(_productCateService,_productService);
+            subForm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            bool? result = subForm.ShowDialog();
+            if (result != null && result.Value)
+            {
+                await LoadProductAsyn();
+            }
         }
         #endregion
     }

@@ -69,7 +69,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Button Width="60" Content="Edit" Margin="10,0,0,0" Command="{Binding DataContext.EditProductCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                <Button Width="60" Content="Edit" Margin="10,0,0,0" Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
 CommandParameter="{Binding}" ></Button>
                                 <Button Width="60" Content="Delete" CommandParameter="{Binding}" Margin="10,0,0,0" Command="{Binding DataContext.DeleteProductCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" ></Button>
                             </StackPanel>

@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using Microsoft.Extensions.Logging;
+using Moq;
 using ProductManagement.Application;
 using ProductManagement.Application.Interface;
 using ProductManagement.DTO;
@@ -15,7 +16,7 @@ namespace ProductManagement.Test
     {
         private readonly Mock<IProductService> _mockProductService;
         private readonly Mock<IProductCategoryService> _mockProductCateService;
-
+        private readonly Mock<ILogger<ProductDetailViewModel>> _mockProductDetailViewMOdelLogger;
         public ProductDetailViewModelUnitTest()
         {
             SynchronizationContext.SetSynchronizationContext(
@@ -23,11 +24,12 @@ namespace ProductManagement.Test
 
             _mockProductService = new Mock<IProductService>();
             _mockProductCateService = new Mock<IProductCategoryService>();
+            _mockProductDetailViewMOdelLogger = new Mock<ILogger<ProductDetailViewModel>>();
         }
         [Fact(DisplayName = "Show require message when creating product with the product SKU is empty")]
         public async Task AsyncSaveCommand_ShouldRequire_SKU()
-        {           
-            var viewModel = new ProductDetailViewModel(1, _mockProductService.Object, _mockProductCateService.Object);
+        {            
+            var viewModel = new ProductDetailViewModel(1, _mockProductService.Object, _mockProductCateService.Object, _mockProductDetailViewMOdelLogger.Object);
             viewModel.Product = new ProductDTO()
             {
                 SKU="",
@@ -41,8 +43,8 @@ namespace ProductManagement.Test
         }
         [Fact(DisplayName = "Show require message when creating product with the product name is empty")]
         public async Task AsyncSaveCommand_ShouldRequire_Name()
-        {           
-            var viewModel = new ProductDetailViewModel(1, _mockProductService.Object, _mockProductCateService.Object);
+        {            
+            var viewModel = new ProductDetailViewModel(1, _mockProductService.Object, _mockProductCateService.Object, _mockProductDetailViewMOdelLogger.Object);
             viewModel.Product = new ProductDTO()
             {
                 SKU = "1000",

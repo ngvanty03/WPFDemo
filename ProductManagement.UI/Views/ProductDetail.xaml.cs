@@ -1,4 +1,5 @@
-﻿using ProductManagement.Application;
+﻿using Microsoft.Extensions.Logging;
+using ProductManagement.Application;
 using ProductManagement.UI.ViewModel;
 using ProductManagement.UI.ViewModels;
 using System;
@@ -24,12 +25,12 @@ namespace ProductManagement.UI.Views
     {
         private readonly IProductCategoryService _productCategoryService;
         private readonly IProductService _productService;
-        public ProductDetail(int productId,IProductCategoryService productCategoryService, IProductService productService)
+        public ProductDetail(int productId,IProductCategoryService productCategoryService, IProductService productService, ILogger<ProductDetailViewModel> _logger)
         {
             InitializeComponent();
             _productCategoryService = productCategoryService;
             _productService = productService;
-            var viewModel=new ProductDetailViewModel(productId,productService, productCategoryService);
+            var viewModel=new ProductDetailViewModel(productId,productService, productCategoryService, _logger);
             this.Loaded += ProductDetail_Loaded;
             viewModel.CloseAction = new Action(this.Close);
             this.DataContext = viewModel;

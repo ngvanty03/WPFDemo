@@ -1,6 +1,8 @@
-﻿using ProductManagement.Application;
+﻿using Microsoft.Extensions.Logging;
+using ProductManagement.Application;
 using ProductManagement.Application.Interface;
 using ProductManagement.UI.ViewModel;
+using ProductManagement.UI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,10 +25,11 @@ namespace ProductManagement.UI.Views
     /// </summary>
     public partial class ProductList : UserControl
     {
-        public ProductList(IDialogService dialogService,IProductService productService, IProductCategoryService productCateService)
+        public ProductList(IDialogService dialogService,IProductService productService, IProductCategoryService productCateService,
+            ILogger<ProductDetailViewModel> productDetailVMLogger, ILogger<ProductListViewModel> productListVMLogger)
         {
             InitializeComponent();
-            this.DataContext = new ProductListViewModel(dialogService,productService, productCateService);
+            this.DataContext = new ProductListViewModel(dialogService,productService, productCateService, productDetailVMLogger, productListVMLogger);
             this.Loaded += ProductList_Loaded;
         }
 
@@ -40,7 +43,7 @@ namespace ProductManagement.UI.Views
         }
         private void DataGrid_Sorting(object sender, DataGridSortingEventArgs e)
         {
-            e.Handled = true; // ← ngăn WPF tự sort trong memory
+            e.Handled = true; // prevent in memory sorting
 
             if (DataContext is ProductListViewModel vm)
                 vm.SortCommand.Execute(e);

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using ProductManagement.Application;
 using ProductManagement.DTO;
 using System;
@@ -15,50 +16,77 @@ namespace ProductManagement.UI.ViewModels
 {
     public partial class ProductDetailViewModel : ObservableObject
     {
-        public Action CloseAction { get; set; }
-        private readonly int _productId;
-        private readonly IProductService _productService;
-        private readonly IProductCategoryService _productCateService;
-        public ProductDetailViewModel(int productId,IProductService productService, IProductCategoryService productCateService)
+        public Action CloseAction { get; set; }//event to close form
+        
+        public ProductDetailViewModel(int productId,IProductService productService, IProductCategoryService productCateService, ILogger<ProductDetailViewModel> logger)
         { 
             _productService = productService;
             _productCateService = productCateService;
             _productId = productId;
+            _logger = logger;
             SaveCommand = new AsyncRelayCommand(SaveProductAsync);
             CloseCommand = new RelayCommand(Close);
         }
-        #region "Bindding Properties"        
+
+        #region "Private properties"
+        private readonly ILogger<ProductDetailViewModel> _logger;
+        private readonly int _productId;
+        private readonly IProductService _productService;
+        private readonly IProductCategoryService _productCateService;
+        #endregion
+
+        #region "Binding Properties"       
         [ObservableProperty]
         private ObservableCollection<ProductCategoryDTO> _categories;
+
         [ObservableProperty]
         private string _errorMessage;
+
         [ObservableProperty]
         private ProductDTO _product;
+
         #endregion
 
         #region "Command"
         public IAsyncRelayCommand SaveCommand { get; set; }
         public ICommand CloseCommand { get; set; }
         #endregion
-        #region "Methods"
+
+        #region "Functions"
+        /// <summary>
+        /// Init data when loading page
+        /// </summary>
+        /// <returns></returns>
         public async Task InitDataAsync()
         {
-            await InitCategoryAsyn();
-            await LoadProductAsync();
+            try
+            {
+                await InitCategoryAsyn();
+                await LoadProductAsync();
+            }
+            catch (Exception ex) {
+                ErrorMessage = "An error occurred while loading data";
+                _logger.LogError(ex.ToString());
+            }
         }
+        /// <summary>
+        /// Load category data
+        /// </summary>
+        /// <returns></returns>
         private async Task InitCategoryAsyn()
         {
-            var result = await _productCateService.GetAllActiveAsync();
-            // 1. Create a standard temporary list
+            var result = await _productCateService.GetAllActiveAsync();           
             var tempList = new List<ProductCategoryDTO>
             {
                 new ProductCategoryDTO { Id = 0, Name = "- - -" }
-            };
-            // 2. Add your results to the temp list
-            tempList.AddRange(result);
-            // 3. Assign a brand new ObservableCollection to the public property
+            };            
+            tempList.AddRange(result);            
             Categories = new ObservableCollection<ProductCategoryDTO>(tempList);
         }
+        /// <summary>
+        /// Load product from DB
+        /// </summary>
+        /// <returns></returns>
         private async Task LoadProductAsync() {
             if (_productId < 1)
             {
@@ -67,6 +95,10 @@ namespace ProductManagement.UI.ViewModels
             }
             Product = await _productService.GetByIdAsync(_productId);            
         }
+        /// <summary>
+        /// Save to DB
+        /// </summary>
+        /// <returns></returns>
         private async Task SaveProductAsync()
         {
             try
@@ -93,13 +125,16 @@ namespace ProductManagement.UI.ViewModels
                     await _productService.InsertAsync(Product);
                 Close();
             }
-            catch (Exception ex) { 
-                ErrorMessage = ex.Message;
+            catch (Exception ex) {
+                ErrorMessage = "An error occurred while saving data";
+                _logger.LogError(ex.ToString());
             }
         }        
+        /// <summary>
+        /// Close button event
+        /// </summary>
         public void Close()
-        {
-            // 2. Gọi Invoke để kích hoạt hành động đóng form từ View truyền vào
+        {            
             CloseAction?.Invoke();
         }
         #endregion

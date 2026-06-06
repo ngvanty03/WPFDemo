@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ProductManagement.Application;
+using ProductManagement.Application.Interface;
 using ProductManagement.DTO;
 using ProductManagement.UI.Views;
 using ProductManagement.UI.Views;
@@ -19,20 +20,24 @@ namespace ProductManagement.UI.ViewModel
     {
         private readonly IProductService _productService;
         private readonly IProductCategoryService _productCateService;
+        private readonly IDialogService _dialogService;
         #region "Command"
         public ICommand SearchCommand { get; set; }
         public ICommand ClearCommand { get; set; }
         public ICommand EditCommand { get; set; }
         public ICommand AddNewCommand { get; set; }
+        public ICommand DeleteCommand { get; set; }
         #endregion
-        public ProductListViewModel(IProductService productService, IProductCategoryService productCateService)
+        public ProductListViewModel(IDialogService dialogService,IProductService productService, IProductCategoryService productCateService)
         {
             _productService = productService;
             _productCateService = productCateService;
+            _dialogService = dialogService;
             SearchCommand = new AsyncRelayCommand(LoadProductAsyn);
             ClearCommand = new AsyncRelayCommand(ClearAsyn);
             EditCommand = new AsyncRelayCommand<ProductDTO>(ShowProductDetail);
             AddNewCommand = new AsyncRelayCommand<ProductDTO>(ShowProductDetail);
+            DeleteCommand=new AsyncRelayCommand<ProductDTO>(DeleteAsyn);
             IsLoading = true;
         }
 
@@ -91,6 +96,15 @@ namespace ProductManagement.UI.ViewModel
             bool? result = subForm.ShowDialog();
             if (result != null && result.Value)
             {
+                await LoadProductAsyn();
+            }
+        }
+        public async Task DeleteAsyn(ProductDTO? product)
+        {
+            var confirm = _dialogService.Confirm($"Do you want to delete the product SKU:{product.SKU}?");
+            if (confirm)
+            {
+                await _productService.DeleteAsync(product.Id);
                 await LoadProductAsyn();
             }
         }

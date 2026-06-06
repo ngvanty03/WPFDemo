@@ -1,5 +1,6 @@
 ﻿using ProductManagement.Application;
 using ProductManagement.Infrastructure;
+using ProductManagement.UI.CustomDialog;
 using ProductManagement.UI.Views;
 using System.Configuration;
 using System.Text;
@@ -31,7 +32,8 @@ namespace ProductManagement.UI
             var productCateRepos = new ProductCategoryRepository(dbOptions);
             var productService = new ProductService(productRepos);
             var productCateService = new ProductCategoryService(productCateRepos);
-            MainContent.Content = new ProductList(productService, productCateService);
+            var diaglogService = new DialogService();
+            MainContent.Content = new ProductList(diaglogService,productService, productCateService);
         }
     }
 }

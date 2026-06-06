@@ -1,4 +1,5 @@
 using ProductManagement.Application;
+using ProductManagement.Application.Interface;
 using ProductManagement.UI.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -22,10 +23,10 @@ namespace ProductManagement.UI.Views
     /// </summary>
     public partial class ProductList : UserControl
     {
-        public ProductList(IProductService productService, IProductCategoryService productCateService)
+        public ProductList(IDialogService dialogService,IProductService productService, IProductCategoryService productCateService)
         {
             InitializeComponent();
-            this.DataContext = new ProductListViewModel(productService, productCateService);
+            this.DataContext = new ProductListViewModel(dialogService,productService, productCateService);
             this.Loaded += ProductList_Loaded;
         }
 

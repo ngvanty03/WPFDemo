@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="ProductManagement.UI.CustomControl.CustomPagingControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ProductManagement.UI.CustomControl"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">        
+        <TextBlock Margin="0,0,10,0" Width="120" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+            <TextBlock.Text>
+                <MultiBinding StringFormat="Show page {0} of {1}">
+                    <Binding Path="CurrentPage" RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                    <Binding Path="TotalPages"  RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                </MultiBinding>
+            </TextBlock.Text>
+        </TextBlock>
+        <Button Content="◀ Prev" Height="30" Width="80"
+                Command="{Binding PrevPageCommand}"
+                IsEnabled="{Binding HasPrevPage}" />        
+        <Button Margin="20,0,0,0" Content="Next ▶" Height="30" Width="80"
+                Command="{Binding NextPageCommand}"
+                IsEnabled="{Binding HasNextPage}" />
+    </StackPanel>
+</UserControl>

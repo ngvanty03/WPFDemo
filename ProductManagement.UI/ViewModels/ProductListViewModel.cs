@@ -44,7 +44,6 @@ namespace ProductManagement.UI.ViewModel
             NextPageCommand = new AsyncRelayCommand(NextPageAsync);
             PrevPageCommand = new AsyncRelayCommand(PrevPageAsync);
             SortCommand = new AsyncRelayCommand<DataGridSortingEventArgs>(SortAsync);
-            CurrentPage = 1;
             IsLoading = true;
         }
 
@@ -64,13 +63,7 @@ namespace ProductManagement.UI.ViewModel
         [NotifyCanExecuteChangedFor(nameof(AddNewCommand))]
         [NotifyCanExecuteChangedFor(nameof(DeleteCommand))]
         private bool _isLoading=false;
-
-        [ObservableProperty] private int _totalCount;
-        [ObservableProperty] private int _totalPages;
-        [ObservableProperty] private int _currentPage = 1;
-        [ObservableProperty] private bool _hasNextPage = false;
-        [ObservableProperty] private bool _hasPrevPage = false;
-        private const int PageSize = 20;
+        [ObservableProperty] private PaginationParameters _pagingParameter = new();
         public IAsyncRelayCommand NextPageCommand { get; }
         public IAsyncRelayCommand PrevPageCommand { get; }
 
@@ -97,7 +90,7 @@ namespace ProductManagement.UI.ViewModel
                 IsSortAscending = true;
             }
 
-            CurrentPage = 1; // reset về trang 1 khi sort
+            PagingParameter.CurrentPage = 1; // reset về trang 1 khi sort
             await LoadProductAsyn();
         }
         public async Task InitDataAsync()
@@ -120,31 +113,27 @@ namespace ProductManagement.UI.ViewModel
         }
         private async Task NextPageAsync()
         {
-            CurrentPage++;
+            PagingParameter.CurrentPage++;
             await LoadProductAsyn();
         }
 
         private async Task PrevPageAsync()
         {
-            CurrentPage--;
+            PagingParameter.CurrentPage--;
             await LoadProductAsyn();
         }
         private async Task LoadProductAsyn() {
             IsLoading = true;
-           // CurrentPage = 1;
-            var result = await _productService.SearchAsync(SelectedCategoryId, SearchSKU,CurrentPage,PageSize,SortColumn,IsSortAscending);            
+            var result = await _productService.SearchAsync(SelectedCategoryId, SearchSKU, PagingParameter.CurrentPage, PagingParameter.PageSize, SortColumn,IsSortAscending);            
             Products = new ObservableCollection<ProductDTO>(result.Items);
             FoundData = Products.Count > 0;
-            TotalCount = result.TotalCount;
-            TotalPages = result.TotalPages;
-            HasNextPage=result.HasNextPage;
-            HasPrevPage = result.HasPrevPage;
+            PagingParameter.UpdateState(result.TotalCount);
             IsLoading = false;
         }
         private async Task ClearAsyn() { 
             SelectedCategoryId = 0;
             SearchSKU = "";
-            CurrentPage = 1;
+            PagingParameter.CurrentPage = 1;
             await LoadProductAsyn();
         }
         public async Task ShowProductDetailAsync(ProductDTO product) 

@@ -81,8 +81,8 @@ namespace ProductManagement.UI.ViewModel
         private async Task LoadProductAsyn() {
             IsLoading = true;
             //await Task.Delay(50000);
-            var result = await _productService.GetAllAsync(SelectedCategoryId, SearchSKU);            
-            Products = new ObservableCollection<ProductDTO>(result);
+            var result = await _productService.SearchAsync(SelectedCategoryId, SearchSKU,1,10);            
+            Products = new ObservableCollection<ProductDTO>(result.Items);
             FoundData = Products.Count > 0;
             IsLoading = false;
         }

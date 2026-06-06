@@ -3,7 +3,6 @@ using Moq;
 using ProductManagement.Application;
 using ProductManagement.Application.Exceptions;
 using ProductManagement.DTO;
-using ProductManagement.Infrastructure;
 using Xunit;
 namespace ProductManagement.Test
 {

@@ -23,8 +23,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ProductManagement.Application\ProductManagement.Application.csproj" />
-    <ProjectReference Include="..\ProductManagement.DTO\ProductManagement.DTO.csproj" />
     <ProjectReference Include="..\ProductManagement.Infrastructure\ProductManagement.Infrastructure.csproj" />
+    <ProjectReference Include="..\ProductManagement.Shared\ProductManagement.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

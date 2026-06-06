@@ -1,8 +1,5 @@
-﻿using Dapper;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using ProductManagement.DTO;
-using ProductManagement.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;

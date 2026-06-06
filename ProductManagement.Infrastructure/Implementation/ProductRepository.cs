@@ -1,20 +1,16 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
+using ProductManagement.Application;
 using ProductManagement.DTO;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 namespace ProductManagement.Infrastructure
 {
     public class ProductRepository : IProductRepository
     {
         private readonly DatabaseOptions _DBOptions;
         private readonly ILogger<ProductRepository> _logger;
-        public ProductRepository(ILogger<ProductRepository> logger,DatabaseOptions DBOptions)
+        public ProductRepository(ILogger<ProductRepository> logger, DatabaseOptions DBOptions)
         {
             _DBOptions = DBOptions;
             _logger = logger;
@@ -111,32 +107,45 @@ namespace ProductManagement.Infrastructure
         /// <param name="categoryId"></param>
         /// <param name="SKU"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<ProductDTO>> GetAllAsync(int categoryId, string SKU)
+        public async Task<(IEnumerable<ProductDTO> Items, int TotalCount)> SearchAsync(int categoryId, string SKU, int pageNumber, int pageSize)
         {
+            int offset = (pageNumber - 1) * pageSize;
             var parameters = new DynamicParameters();
-            var sql = "Select Id,SKU,Name,IsActive from Product where 1=1";
+            var where = new StringBuilder("WHERE 1=1");
             if (categoryId > 0)
             {
-                sql += " and CategoryId=@CategoryId";
+                where.Append(" and CategoryId=@CategoryId");
                 parameters.Add("CategoryId", categoryId);
             }
             if (!string.IsNullOrEmpty(SKU))
             {
-                sql += " and SKU=@SKU";
-                parameters.Add("SKU", SKU);
+                where.Append(" and SKU LIKE @SKU");
+                parameters.Add("SKU", $"%{SKU}%");
             }
+            parameters.Add("Offset", offset);
+            parameters.Add("PageSize", pageSize);
+            var sql = $@"SELECT COUNT(*)  FROM Product {where};
+                         SELECT Id,SKU,Name,IsActive from Product 
+                         {where}
+                         ORDER BY Id
+                         OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
+
             using (var connection = new SqlConnection(_DBOptions.DBConnectionString))
             {
                 await connection.OpenAsync().ConfigureAwait(false);
-                return await connection.QueryAsync<ProductDTO>(sql, parameters).ConfigureAwait(false);
+                var dbResult= await connection.QueryMultipleAsync(sql, parameters).ConfigureAwait(false);
+                var totalCount = await dbResult.ReadFirstAsync<int>().ConfigureAwait(false);
+                var items = await dbResult.ReadAsync<ProductDTO>().ConfigureAwait(false);
+                return (items,totalCount);
             }
         }
-        public async Task<bool> CheckSKUExistedAsync(int? productId,string SKU)
+        public async Task<bool> CheckSKUExistedAsync(int? productId, string SKU)
         {
             var parameters = new DynamicParameters();
             parameters.Add("SKU", SKU);
             var sql = "Select 1 from Product where SKU=@SKU";
-            if (productId!=null) {
+            if (productId != null)
+            {
                 //edit case
                 sql += " and Id<>@Id";
                 parameters.Add("Id", productId);
@@ -147,6 +156,6 @@ namespace ProductManagement.Infrastructure
                 var result = await connection.ExecuteScalarAsync<int>(sql, parameters).ConfigureAwait(false);
                 return result > 0;
             }
-        }
+        }        
     }
 }

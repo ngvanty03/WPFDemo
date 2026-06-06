@@ -1,6 +1,6 @@
 ﻿using ProductManagement.DTO;
 
-namespace ProductManagement.Infrastructure
+namespace ProductManagement.Application
 {
     public interface IProductCategoryRepository
     {

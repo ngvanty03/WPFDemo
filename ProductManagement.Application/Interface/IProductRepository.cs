@@ -1,11 +1,11 @@
 ﻿using ProductManagement.DTO;
 
-namespace ProductManagement.Infrastructure
+namespace ProductManagement.Application
 {
     public interface IProductRepository
     {
         Task<bool> DeleteAsync(int productId);
-        Task<IEnumerable<ProductDTO>> GetAllAsync(int categoryId, string SKU);
+        Task<(IEnumerable<ProductDTO> Items, int TotalCount)> SearchAsync(int categoryId, string SKU, int pageNumber, int pageSize);
         Task<ProductDTO?> GetByIdAsync(int productId);
         Task<bool> InsertAsync(ProductDTO product);
         Task<bool> UpdateAsync(ProductDTO product);

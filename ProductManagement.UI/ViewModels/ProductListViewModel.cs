@@ -24,11 +24,11 @@ namespace ProductManagement.UI.ViewModel
         private readonly IProductCategoryService _productCateService;
         private readonly IDialogService _dialogService;
         #region "Command"
-        public ICommand SearchCommand { get; set; }
-        public ICommand ClearCommand { get; set; }
+        public IAsyncRelayCommand SearchCommand { get; set; }
+        public IAsyncRelayCommand ClearCommand { get; set; }
         public ICommand EditCommand { get; set; }
         public ICommand AddNewCommand { get; set; }
-        public ICommand DeleteCommand { get; set; }
+        public IAsyncRelayCommand DeleteCommand { get; set; }
         #endregion
         public ProductListViewModel(IDialogService dialogService,IProductService productService, IProductCategoryService productCateService)
         {

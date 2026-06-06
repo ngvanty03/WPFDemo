@@ -37,7 +37,7 @@ namespace ProductManagement.UI.ViewModels
         #endregion
 
         #region "Command"
-        public ICommand SaveCommand { get; set; }
+        public IAsyncRelayCommand SaveCommand { get; set; }
         public ICommand CloseCommand { get; set; }
         #endregion
         #region "Methods"

@@ -6,7 +6,7 @@ using ProductManagement.DTO;
 using Xunit;
 namespace ProductManagement.Test
 {
-    public class ProductUnitTest
+    public class ProductLogicUnitTest
     {
         [Fact(DisplayName = "Insert product should throw exception when SKU already exists")]
         public async Task InsertAsync_Should_ThrowBusinessException_WhenSkuAlreadyExists()

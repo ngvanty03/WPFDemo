@@ -1,4 +1,5 @@
-﻿using ProductManagement.Application;
+﻿using Microsoft.Extensions.Configuration;
+using ProductManagement.Application;
 using ProductManagement.Infrastructure;
 using ProductManagement.UI.CustomDialog;
 using ProductManagement.UI.Views;
@@ -26,7 +27,7 @@ namespace ProductManagement.UI
             InitializeComponent();
             var dbOptions = new DatabaseOptions
             {
-                DBConnectionString = ConfigurationManager.AppSettings["DBConnectionString"] ?? ""
+                DBConnectionString = App.Configuration.GetConnectionString("DefaultConnection")
             };
             var productRepos = new ProductRepository(dbOptions);
             var productCateRepos = new ProductCategoryRepository(dbOptions);

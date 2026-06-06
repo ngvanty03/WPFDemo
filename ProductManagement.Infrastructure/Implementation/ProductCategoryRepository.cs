@@ -21,8 +21,8 @@ namespace ProductManagement.Infrastructure
             var sql = "Select Id,Name from ProductCategory where IsActive=1";
             using (var connection = new SqlConnection(_DBOptions.DBConnectionString))
             {
-                await connection.OpenAsync();
-                return await connection.QueryAsync<ProductCategoryDTO>(sql, parameters);
+                await connection.OpenAsync().ConfigureAwait(false);
+                return await connection.QueryAsync<ProductCategoryDTO>(sql, parameters).ConfigureAwait(false);
             }
         }
     }

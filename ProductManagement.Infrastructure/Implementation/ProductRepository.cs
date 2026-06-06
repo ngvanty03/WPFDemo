@@ -51,7 +51,7 @@ namespace ProductManagement.Infrastructure
                         [IsActive]=@IsActive,[Description]=@Description where Id=@Id";
             using (var connection = new SqlConnection(_DBOptions.DBConnectionString))
             {
-                await connection.OpenAsync();
+                await connection.OpenAsync().ConfigureAwait(false);
                 var result = await connection.ExecuteAsync(sql,
                     new
                     {
@@ -61,7 +61,7 @@ namespace ProductManagement.Infrastructure
                         IsActive = product.IsActive,
                         Description = product.Description,
                         Id = product.Id
-                    });
+                    }).ConfigureAwait(false);
                 return result > 0;
             }
         }
@@ -75,12 +75,12 @@ namespace ProductManagement.Infrastructure
             var sql = @"Delete from Product where Id=@Id";
             using (var connection = new SqlConnection(_DBOptions.DBConnectionString))
             {
-                await connection.OpenAsync();
+                await connection.OpenAsync().ConfigureAwait(false);
                 var result = await connection.ExecuteAsync(sql,
                     new
                     {
                         Id = productId
-                    });
+                    }).ConfigureAwait(false);
                 return result > 0;
             }
         }
@@ -94,8 +94,8 @@ namespace ProductManagement.Infrastructure
             var sql = "Select Id,CategoryId,SKU,Name,IsActive,Description from Product where Id=@Id";
             using (var connection = new SqlConnection(_DBOptions.DBConnectionString))
             {
-                await connection.OpenAsync();
-                var result = await connection.QueryFirstOrDefaultAsync<ProductDTO>(sql, new { Id = productId });
+                await connection.OpenAsync().ConfigureAwait(false);
+                var result = await connection.QueryFirstOrDefaultAsync<ProductDTO>(sql, new { Id = productId }).ConfigureAwait(false);
                 if (result != null)
                     return result;
             }
@@ -124,8 +124,8 @@ namespace ProductManagement.Infrastructure
             }
             using (var connection = new SqlConnection(_DBOptions.DBConnectionString))
             {
-                await connection.OpenAsync();
-                return await connection.QueryAsync<ProductDTO>(sql, parameters);
+                await connection.OpenAsync().ConfigureAwait(false);
+                return await connection.QueryAsync<ProductDTO>(sql, parameters).ConfigureAwait(false);
             }
         }
         public async Task<bool> CheckSKUExistedAsync(int? productId,string SKU)
@@ -140,8 +140,8 @@ namespace ProductManagement.Infrastructure
             }
             using (var connection = new SqlConnection(_DBOptions.DBConnectionString))
             {
-                await connection.OpenAsync();
-                var result = await connection.ExecuteScalarAsync<int>(sql, parameters);
+                await connection.OpenAsync().ConfigureAwait(false);
+                var result = await connection.ExecuteScalarAsync<int>(sql, parameters).ConfigureAwait(false);
                 return result > 0;
             }
         }

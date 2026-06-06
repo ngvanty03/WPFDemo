@@ -18,27 +18,27 @@ namespace ProductManagement.Application
         }
         public async Task<bool> DeleteAsync(int productId)
         {
-            return await _repo.DeleteAsync(productId);
+            return await _repo.DeleteAsync(productId).ConfigureAwait(false);
         }
         public async Task<IEnumerable<ProductDTO>> GetAllAsync(int categoryId, string SKU)
         {
-            return await _repo.GetAllAsync(categoryId, SKU);
+            return await _repo.GetAllAsync(categoryId, SKU).ConfigureAwait(false);
         }
         public async Task<ProductDTO?> GetByIdAsync(int productId)
         {
-            return await _repo.GetByIdAsync(productId);
+            return await _repo.GetByIdAsync(productId).ConfigureAwait(false);
         }
         public async Task<bool> InsertAsync(ProductDTO product)
         {
-            if (await _repo.CheckSKUExistedAsync(null, product.SKU))
+            if (await _repo.CheckSKUExistedAsync(null, product.SKU).ConfigureAwait(false))
                 throw new BusinessException($"Could not insert because the SKU:{product.SKU} already existed.");
-            return await _repo.InsertAsync(product);
+            return await _repo.InsertAsync(product).ConfigureAwait(false);
         }
         public async Task<bool> UpdateAsync(ProductDTO product)
         {
-            if (await _repo.CheckSKUExistedAsync(product.Id, product.SKU))
+            if (await _repo.CheckSKUExistedAsync(product.Id, product.SKU).ConfigureAwait(false))
                 throw new BusinessException($"Could not update because the SKU:{product.SKU} already existed.");
-            return await _repo.UpdateAsync(product);
+            return await _repo.UpdateAsync(product).ConfigureAwait(false);
         }
 
     }

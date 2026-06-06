@@ -15,6 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation.Text;
+using System.Windows.Controls;
 using System.Windows.Input;
 namespace ProductManagement.UI.ViewModel
 {
@@ -26,8 +27,8 @@ namespace ProductManagement.UI.ViewModel
         #region "Command"
         public IAsyncRelayCommand SearchCommand { get; set; }
         public IAsyncRelayCommand ClearCommand { get; set; }
-        public ICommand EditCommand { get; set; }
-        public ICommand AddNewCommand { get; set; }
+        public IAsyncRelayCommand EditCommand { get; set; }
+        public IAsyncRelayCommand AddNewCommand { get; set; }
         public IAsyncRelayCommand DeleteCommand { get; set; }
         #endregion
         public ProductListViewModel(IDialogService dialogService,IProductService productService, IProductCategoryService productCateService)
@@ -37,9 +38,13 @@ namespace ProductManagement.UI.ViewModel
             _dialogService = dialogService;
             SearchCommand = new AsyncRelayCommand(LoadProductAsyn);
             ClearCommand = new AsyncRelayCommand(ClearAsyn);
-            EditCommand = new AsyncRelayCommand<ProductDTO>(ShowProductDetail);
-            AddNewCommand = new AsyncRelayCommand<ProductDTO>(ShowProductDetail);
-            DeleteCommand=new AsyncRelayCommand<ProductDTO>(DeleteAsyn);
+            EditCommand = new AsyncRelayCommand<ProductDTO>(ShowProductDetailAsync, CanAddNew);
+            AddNewCommand = new AsyncRelayCommand<ProductDTO>(ShowProductDetailAsync, CanAddNew);
+            DeleteCommand=new AsyncRelayCommand<ProductDTO>(DeleteAsyn, CanAddNew);
+            NextPageCommand = new AsyncRelayCommand(NextPageAsync);
+            PrevPageCommand = new AsyncRelayCommand(PrevPageAsync);
+            SortCommand = new AsyncRelayCommand<DataGridSortingEventArgs>(SortAsync);
+            CurrentPage = 1;
             IsLoading = true;
         }
 
@@ -56,10 +61,45 @@ namespace ProductManagement.UI.ViewModel
         private bool _foundData=true;
         // Tracks if the search service is actively running
         [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(AddNewCommand))]
+        [NotifyCanExecuteChangedFor(nameof(DeleteCommand))]
         private bool _isLoading=false;
+
+        [ObservableProperty] private int _totalCount;
+        [ObservableProperty] private int _totalPages;
+        [ObservableProperty] private int _currentPage = 1;
+        [ObservableProperty] private bool _hasNextPage = false;
+        [ObservableProperty] private bool _hasPrevPage = false;
+        private const int PageSize = 20;
+        public IAsyncRelayCommand NextPageCommand { get; }
+        public IAsyncRelayCommand PrevPageCommand { get; }
+
+        [ObservableProperty]
+        private string _sortColumn = "Name";     // default sort
+
+        [ObservableProperty]
+        private bool _isSortAscending = true;
+
+        public IAsyncRelayCommand<DataGridSortingEventArgs> SortCommand { get; }
         #endregion      
 
         #region "Functions"
+        private async Task SortAsync(DataGridSortingEventArgs? e)
+        {
+            if (e is null) return;
+
+            // Đổi chiều sort nếu click cùng column
+            if (SortColumn == e.Column.SortMemberPath)
+                IsSortAscending = !IsSortAscending;
+            else
+            {
+                SortColumn = e.Column.SortMemberPath;
+                IsSortAscending = true;
+            }
+
+            CurrentPage = 1; // reset về trang 1 khi sort
+            await LoadProductAsyn();
+        }
         public async Task InitDataAsync()
         {        
             await InitCategoryAsyn();
@@ -78,20 +118,36 @@ namespace ProductManagement.UI.ViewModel
             // 3. Assign a brand new ObservableCollection to the public property
             Categories = new ObservableCollection<ProductCategoryDTO>(tempList);
         }
+        private async Task NextPageAsync()
+        {
+            CurrentPage++;
+            await LoadProductAsyn();
+        }
+
+        private async Task PrevPageAsync()
+        {
+            CurrentPage--;
+            await LoadProductAsyn();
+        }
         private async Task LoadProductAsyn() {
             IsLoading = true;
-            //await Task.Delay(50000);
-            var result = await _productService.SearchAsync(SelectedCategoryId, SearchSKU,1,10);            
+           // CurrentPage = 1;
+            var result = await _productService.SearchAsync(SelectedCategoryId, SearchSKU,CurrentPage,PageSize,SortColumn,IsSortAscending);            
             Products = new ObservableCollection<ProductDTO>(result.Items);
             FoundData = Products.Count > 0;
+            TotalCount = result.TotalCount;
+            TotalPages = result.TotalPages;
+            HasNextPage=result.HasNextPage;
+            HasPrevPage = result.HasPrevPage;
             IsLoading = false;
         }
         private async Task ClearAsyn() { 
             SelectedCategoryId = 0;
             SearchSKU = "";
+            CurrentPage = 1;
             await LoadProductAsyn();
         }
-        public async Task ShowProductDetail(ProductDTO product) 
+        public async Task ShowProductDetailAsync(ProductDTO product) 
         { 
             var subForm= new ProductDetail(product!=null?product.Id:0,_productCateService,_productService);
             subForm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -109,6 +165,14 @@ namespace ProductManagement.UI.ViewModel
                 await _productService.DeleteAsync(product.Id);
                 await LoadProductAsyn();
             }
+        }
+        private bool CanAddNew(ProductDTO product)
+        {
+            return !IsLoading;
+        }
+        private bool CanDelete()
+        {
+            return !IsLoading;
         }
         #endregion
     }

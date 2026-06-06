@@ -1,4 +1,4 @@
-using ProductManagement.Application;
+﻿using ProductManagement.Application;
 using ProductManagement.Application.Interface;
 using ProductManagement.UI.ViewModel;
 using System;
@@ -37,6 +37,13 @@ namespace ProductManagement.UI.Views
                 await viewModel.InitDataAsync();
             }
             txtSKU.Focus();
+        }
+        private void DataGrid_Sorting(object sender, DataGridSortingEventArgs e)
+        {
+            e.Handled = true; // ← ngăn WPF tự sort trong memory
+
+            if (DataContext is ProductListViewModel vm)
+                vm.SortCommand.Execute(e);
         }
     }
 }

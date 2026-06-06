@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using ProductManagement.Application.Exceptions;
 using ProductManagement.DTO;
+using ProductManagement.Shared;
 namespace ProductManagement.Application
 {
     public class ProductService : IProductService
@@ -16,18 +17,17 @@ namespace ProductManagement.Application
         {
             return await _repo.DeleteAsync(productId).ConfigureAwait(false);
         }
-        public async Task<(IEnumerable<ProductDTO> Items, int TotalCount)> SearchAsync(int categoryId, string SKU, int pageNumber, int pageSize)
+        public async Task<PagedResult<ProductDTO>> SearchAsync(int categoryId, string SKU, int pageNumber, int pageSize, string sortColumn, bool ascending)
         {
-            var result= await _repo.SearchAsync(categoryId, SKU,pageNumber,pageSize).ConfigureAwait(false);
-            /*return new PagedResult<ProductDTO>
+            var result= await _repo.SearchAsync(categoryId, SKU,pageNumber,pageSize,sortColumn,ascending).ConfigureAwait(false);
+            return new PagedResult<ProductDTO>
             {
                 Items = result.Items,
                 TotalCount = result.TotalCount,
                 Page = pageNumber,
                 PageSize = pageSize,
                 TotalPages = (int)Math.Ceiling(result.TotalCount / (double)pageSize)
-            };*/
-            return result;
+            };
         }
         public async Task<ProductDTO?> GetByIdAsync(int productId)
         {

@@ -107,7 +107,7 @@ namespace ProductManagement.Infrastructure
         /// <param name="categoryId"></param>
         /// <param name="SKU"></param>
         /// <returns></returns>
-        public async Task<(IEnumerable<ProductDTO> Items, int TotalCount)> SearchAsync(int categoryId, string SKU, int pageNumber, int pageSize)
+        public async Task<(IEnumerable<ProductDTO> Items, int TotalCount)> SearchAsync(int categoryId, string SKU, int pageNumber, int pageSize, string sortColumn, bool ascending)
         {
             int offset = (pageNumber - 1) * pageSize;
             var parameters = new DynamicParameters();
@@ -122,12 +122,17 @@ namespace ProductManagement.Infrastructure
                 where.Append(" and SKU LIKE @SKU");
                 parameters.Add("SKU", $"%{SKU}%");
             }
+            var allowedColumns = new HashSet<string> { "Name", "SKU" };
+            var validSortColumn = allowedColumns.Contains(sortColumn)
+                                    ? sortColumn
+                                    : "Name";
+            var sortDirection = ascending ? "ASC" : "DESC";
             parameters.Add("Offset", offset);
             parameters.Add("PageSize", pageSize);
             var sql = $@"SELECT COUNT(*)  FROM Product {where};
                          SELECT Id,SKU,Name,IsActive from Product 
                          {where}
-                         ORDER BY Id
+                         ORDER BY {sortColumn} {sortDirection}
                          OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
 
             using (var connection = new SqlConnection(_DBOptions.DBConnectionString))

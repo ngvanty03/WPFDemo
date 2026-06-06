@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using ProductManagement.Application;
 using ProductManagement.Infrastructure;
 using ProductManagement.UI.CustomDialog;
 using ProductManagement.UI.Views;
+using Serilog;
 using System.Configuration;
 using System.Text;
 using System.Windows;
@@ -28,13 +30,18 @@ namespace ProductManagement.UI
             var dbOptions = new DatabaseOptions
             {
                 DBConnectionString = App.Configuration.GetConnectionString("DefaultConnection")
+
             };
-            var productRepos = new ProductRepository(dbOptions);
-            var productCateRepos = new ProductCategoryRepository(dbOptions);
-            var productService = new ProductService(productRepos);
-            var productCateService = new ProductCategoryService(productCateRepos);
+            var loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSerilog(Log.Logger);
+            });
+            var productRepos = new ProductRepository(loggerFactory.CreateLogger<ProductRepository>(), dbOptions);
+            var productCateRepos = new ProductCategoryRepository(loggerFactory.CreateLogger<ProductCategoryRepository>(), dbOptions);
+            var productService = new ProductService(loggerFactory.CreateLogger<ProductService>(), productRepos);
+            var productCateService = new ProductCategoryService(loggerFactory.CreateLogger<ProductCategoryService>(),productCateRepos);
             var diaglogService = new DialogService();
-            MainContent.Content = new ProductList(diaglogService,productService, productCateService);
+            MainContent.Content = new ProductList(diaglogService, productService, productCateService);
         }
     }
 }

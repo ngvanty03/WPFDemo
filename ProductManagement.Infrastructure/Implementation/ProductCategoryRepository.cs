@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Logging;
 using ProductManagement.DTO;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,10 @@ namespace ProductManagement.Infrastructure
     public class ProductCategoryRepository : IProductCategoryRepository
     {
         private readonly DatabaseOptions _DBOptions;
-        public ProductCategoryRepository(DatabaseOptions DBOptions) { 
+        private readonly ILogger<ProductCategoryRepository> _logger;
+        public ProductCategoryRepository(ILogger<ProductCategoryRepository> logger,DatabaseOptions DBOptions) { 
             _DBOptions = DBOptions;
+            _logger = logger;
         }
         public async Task<IEnumerable<ProductCategoryDTO>> GetAllActiveAsync()
         {

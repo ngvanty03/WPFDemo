@@ -1,20 +1,23 @@
-﻿using System;
+﻿using Dapper;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Logging;
+using ProductManagement.DTO;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Dapper;
-using ProductManagement.DTO;
-using Microsoft.Data.SqlClient;
 namespace ProductManagement.Infrastructure
 {
     public class ProductRepository : IProductRepository
     {
         private readonly DatabaseOptions _DBOptions;
-        public ProductRepository(DatabaseOptions DBOptions)
+        private readonly ILogger<ProductRepository> _logger;
+        public ProductRepository(ILogger<ProductRepository> logger,DatabaseOptions DBOptions)
         {
             _DBOptions = DBOptions;
+            _logger = logger;
         }
         /// <summary>
         /// Insert a new product to DB

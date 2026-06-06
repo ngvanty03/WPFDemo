@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using ProductManagement.Application;
 using ProductManagement.Application.Interface;
 using ProductManagement.DTO;
+using ProductManagement.Infrastructure;
 using ProductManagement.UI.Views;
 using ProductManagement.UI.Views;
 using System;
@@ -21,6 +23,7 @@ namespace ProductManagement.UI.ViewModel
         private readonly IProductService _productService;
         private readonly IProductCategoryService _productCateService;
         private readonly IDialogService _dialogService;
+        private readonly ILogger<ProductListViewModel> _logger;
         #region "Command"
         public ICommand SearchCommand { get; set; }
         public ICommand ClearCommand { get; set; }
@@ -28,8 +31,9 @@ namespace ProductManagement.UI.ViewModel
         public ICommand AddNewCommand { get; set; }
         public ICommand DeleteCommand { get; set; }
         #endregion
-        public ProductListViewModel(IDialogService dialogService,IProductService productService, IProductCategoryService productCateService)
+        public ProductListViewModel(ILogger<ProductListViewModel> logger,IDialogService dialogService,IProductService productService, IProductCategoryService productCateService)
         {
+            _logger = logger;   
             _productService = productService;
             _productCateService = productCateService;
             _dialogService = dialogService;

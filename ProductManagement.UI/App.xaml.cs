@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
+using Serilog;
 using System.Configuration;
 using System.Data;
 using System.Windows;
-using Microsoft.Extensions.Configuration;
 namespace ProductManagement.UI
 {
     /// <summary>
@@ -18,7 +19,10 @@ namespace ProductManagement.UI
                 .SetBasePath(AppContext.BaseDirectory)
                 .AddJsonFile("appsettings.json", optional: false)
                 .Build();
-
+            Log.Logger = new LoggerConfiguration()
+            .ReadFrom.Configuration(Configuration)
+            .CreateLogger();
+            Log.Information("Application started");
             base.OnStartup(e);
         }
     }

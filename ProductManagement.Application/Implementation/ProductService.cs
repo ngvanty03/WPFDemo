@@ -1,4 +1,5 @@
-﻿using ProductManagement.Application.Exceptions;
+﻿using Microsoft.Extensions.Logging;
+using ProductManagement.Application.Exceptions;
 using ProductManagement.DTO;
 using ProductManagement.Infrastructure;
 using System;
@@ -12,9 +13,11 @@ namespace ProductManagement.Application
     public class ProductService : IProductService
     {
         private readonly IProductRepository _repo;
-        public ProductService(IProductRepository repo)
+        private readonly ILogger<ProductService> _logger;
+        public ProductService(ILogger<ProductService> logger, IProductRepository repo)
         {
             _repo = repo;
+            _logger= logger;
         }
         public async Task<bool> DeleteAsync(int productId)
         {

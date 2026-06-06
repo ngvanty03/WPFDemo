@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using Microsoft.Extensions.Logging;
+using Moq;
 using ProductManagement.Application;
 using ProductManagement.Application.Exceptions;
 using ProductManagement.DTO;
@@ -12,9 +13,10 @@ namespace ProductManagement.Test
         public async Task InsertAsync_Should_ThrowBusinessException_WhenSkuAlreadyExists()
         {
             var repoMock = new Mock<IProductRepository>();
+            var logger = new Mock<ILogger<ProductService>>();
             repoMock.Setup(x => x.CheckSKUExistedAsync(null, "A001"))
            .ReturnsAsync(true);
-            var service = new ProductService(repoMock.Object);
+            var service = new ProductService(logger.Object,repoMock.Object);
             var product = new ProductDTO
             {
                 SKU = "A001"
@@ -26,12 +28,13 @@ namespace ProductManagement.Test
         [Fact(DisplayName = "Insert product successfully when SKU does not exist")]
         public async Task InsertAsync_Success_WhenSkuNotExists()
         {
+            var logger = new Mock<ILogger<ProductService>>();
             var repoMock = new Mock<IProductRepository>();
             repoMock.Setup(x => x.CheckSKUExistedAsync(null, "A001"))
            .ReturnsAsync(false);
             repoMock.Setup(x => x.InsertAsync(It.IsAny<ProductDTO>()))
         .ReturnsAsync(true);
-            var service = new ProductService(repoMock.Object);
+            var service = new ProductService(logger.Object,repoMock.Object);
             var product = new ProductDTO
             {
                 SKU = "A001"

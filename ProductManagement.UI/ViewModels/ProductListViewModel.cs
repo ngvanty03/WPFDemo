@@ -5,6 +5,7 @@ using ProductManagement.Application;
 using ProductManagement.Application.Interface;
 using ProductManagement.DTO;
 using ProductManagement.Infrastructure;
+using ProductManagement.UI.Utils;
 using ProductManagement.UI.Views;
 using ProductManagement.UI.Views;
 using System;
@@ -36,7 +37,7 @@ namespace ProductManagement.UI.ViewModel
             _productService = productService;
             _productCateService = productCateService;
             _dialogService = dialogService;
-            SearchCommand = new AsyncRelayCommand(LoadProductAsyn);
+            SearchCommand = new AsyncRelayCommand(SearchProductAsyn);
             ClearCommand = new AsyncRelayCommand(ClearAsyn);
             EditCommand = new AsyncRelayCommand<ProductDTO>(ShowProductDetailAsync, CanAddNew);
             AddNewCommand = new AsyncRelayCommand<ProductDTO>(ShowProductDetailAsync, CanAddNew);
@@ -44,7 +45,7 @@ namespace ProductManagement.UI.ViewModel
             NextPageCommand = new AsyncRelayCommand(NextPageAsync);
             PrevPageCommand = new AsyncRelayCommand(PrevPageAsync);
             SortCommand = new AsyncRelayCommand<DataGridSortingEventArgs>(SortAsync);
-            IsLoading = true;
+            ResetPageData();
         }
 
         #region "Bindding Properties"
@@ -63,15 +64,11 @@ namespace ProductManagement.UI.ViewModel
         [NotifyCanExecuteChangedFor(nameof(AddNewCommand))]
         [NotifyCanExecuteChangedFor(nameof(DeleteCommand))]
         private bool _isLoading=false;
-        [ObservableProperty] private PaginationParameters _pagingParameter = new();
+        [ObservableProperty] private PagingParameters _pagingParameter = new();
         public IAsyncRelayCommand NextPageCommand { get; }
         public IAsyncRelayCommand PrevPageCommand { get; }
 
-        [ObservableProperty]
-        private string _sortColumn = "Name";     // default sort
-
-        [ObservableProperty]
-        private bool _isSortAscending = true;
+        [ObservableProperty] private SortingParameters _sortingParameter = new();
 
         public IAsyncRelayCommand<DataGridSortingEventArgs> SortCommand { get; }
         #endregion      
@@ -80,23 +77,18 @@ namespace ProductManagement.UI.ViewModel
         private async Task SortAsync(DataGridSortingEventArgs? e)
         {
             if (e is null) return;
-
-            // Đổi chiều sort nếu click cùng column
-            if (SortColumn == e.Column.SortMemberPath)
-                IsSortAscending = !IsSortAscending;
-            else
-            {
-                SortColumn = e.Column.SortMemberPath;
-                IsSortAscending = true;
-            }
-
+            IsLoading=true;
+            SortingParameter.UpdateState(e.Column.SortMemberPath);
             PagingParameter.CurrentPage = 1; // reset về trang 1 khi sort
             await LoadProductAsyn();
+            IsLoading = false;
         }
         public async Task InitDataAsync()
         {        
+            IsLoading=true;
             await InitCategoryAsyn();
             await LoadProductAsyn();
+            IsLoading = false;
         }
         private async Task InitCategoryAsyn()
         {
@@ -113,28 +105,39 @@ namespace ProductManagement.UI.ViewModel
         }
         private async Task NextPageAsync()
         {
+            IsLoading = true;
             PagingParameter.CurrentPage++;
             await LoadProductAsyn();
+            IsLoading = false;
         }
 
         private async Task PrevPageAsync()
         {
+            IsLoading = true;
             PagingParameter.CurrentPage--;
             await LoadProductAsyn();
+            IsLoading = false;
         }
-        private async Task LoadProductAsyn() {
+        private async Task SearchProductAsyn()
+        {
             IsLoading = true;
-            var result = await _productService.SearchAsync(SelectedCategoryId, SearchSKU, PagingParameter.CurrentPage, PagingParameter.PageSize, SortColumn,IsSortAscending);            
+            ResetPageData();
+            await LoadProductAsyn();
+            IsLoading = false;
+        }
+        private async Task LoadProductAsyn() {            
+            var result = await _productService.SearchAsync(SelectedCategoryId, SearchSKU, PagingParameter.CurrentPage, PagingParameter.PageSize, SortingParameter.SortColumn, SortingParameter.SortDirection);            
             Products = new ObservableCollection<ProductDTO>(result.Items);
             FoundData = Products.Count > 0;
             PagingParameter.UpdateState(result.TotalCount);
-            IsLoading = false;
         }
-        private async Task ClearAsyn() { 
+        private async Task ClearAsyn() {
+            IsLoading = true;
             SelectedCategoryId = 0;
             SearchSKU = "";
-            PagingParameter.CurrentPage = 1;
+            ResetPageData();
             await LoadProductAsyn();
+            IsLoading = false;
         }
         public async Task ShowProductDetailAsync(ProductDTO product) 
         { 
@@ -159,10 +162,13 @@ namespace ProductManagement.UI.ViewModel
         {
             return !IsLoading;
         }
-        private bool CanDelete()
+        private void ResetPageData()
         {
-            return !IsLoading;
+            SortingParameter.SortColumn = "Name";//default sorting
+            SortingParameter.SortDirection = "ASC";
+            PagingParameter.CurrentPage = 1;
         }
+
         #endregion
     }
 }

@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-public partial class PaginationParameters : ObservableObject
+public partial class PagingParameters : ObservableObject
 {
     [ObservableProperty] private int _totalCount;
     [ObservableProperty] private int _totalPages;

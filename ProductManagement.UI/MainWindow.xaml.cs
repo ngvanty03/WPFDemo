@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ProductManagement.Application;
 using ProductManagement.Application.Interface;
@@ -30,6 +31,10 @@ namespace ProductManagement.UI
         public MainWindow()
         {
             InitializeComponent();
+            var productListVM = App.Services.GetRequiredService<ProductListViewModel>();
+            MainContent.Content = new ProductList(productListVM);
+        }
+        /*private void ManualDIInjection() {
             var dbOptions = new DatabaseOptions
             {
                 DBConnectionString = App.Configuration.GetConnectionString("DefaultConnection")
@@ -42,12 +47,12 @@ namespace ProductManagement.UI
             var productRepos = new ProductRepository(loggerFactory.CreateLogger<ProductRepository>(), dbOptions);
             var productCateRepos = new ProductCategoryRepository(loggerFactory.CreateLogger<ProductCategoryRepository>(), dbOptions);
             var productService = new ProductService(loggerFactory.CreateLogger<ProductService>(), productRepos);
-            var productCateService = new ProductCategoryService(loggerFactory.CreateLogger<ProductCategoryService>(),productCateRepos);
+            var productCateService = new ProductCategoryService(loggerFactory.CreateLogger<ProductCategoryService>(), productCateRepos);
             var diaglogService = new DialogService();
             var productDetailVMLogger = loggerFactory.CreateLogger<ProductDetailViewModel>();
             var productListVMLogger = loggerFactory.CreateLogger<ProductListViewModel>();
             var productListVM = new ProductListViewModel(diaglogService, productService, productCateService, productDetailVMLogger, productListVMLogger);
             MainContent.Content = new ProductList(productListVM);
-        }
+        }*/
     }
 }

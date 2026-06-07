@@ -16,10 +16,10 @@ namespace ProductManagement.UI.ViewModel
     {        
         public ProductListViewModel(IDialogService dialogService,IProductService productService, IProductCategoryService productCateService, ILogger<ProductDetailViewModel> productDetailVMLogger, ILogger<ProductListViewModel> productListVMLogger)
         {
-            _productService = productService;
-            _productCateService = productCateService;
+            ProductService = productService;
+            ProductCateService = productCateService;
             _dialogService = dialogService;
-            _productDetailVMLogger = productDetailVMLogger;
+            ProductDetailVMLogger = productDetailVMLogger;
             _productListVMLogger = productListVMLogger;
             SearchCommand = new AsyncRelayCommand(SearchProductAsyn);
             ClearCommand = new AsyncRelayCommand(ClearAsyn);
@@ -32,11 +32,11 @@ namespace ProductManagement.UI.ViewModel
             ResetPageData();
         }
 
-        #region "Private properties"
-        private readonly ILogger<ProductDetailViewModel> _productDetailVMLogger;
+        #region "Properties"
+        public readonly ILogger<ProductDetailViewModel> ProductDetailVMLogger;
         private readonly ILogger<ProductListViewModel> _productListVMLogger;
-        private readonly IProductService _productService;
-        private readonly IProductCategoryService _productCateService;
+        public readonly IProductService ProductService;
+        public readonly IProductCategoryService ProductCateService;
         private readonly IDialogService _dialogService;
         #endregion
 
@@ -106,7 +106,7 @@ namespace ProductManagement.UI.ViewModel
         /// <returns></returns>
         private async Task InitCategoryAsyn()
         {
-            var result = await _productCateService.GetAllActiveAsync();
+            var result = await ProductCateService.GetAllActiveAsync();
             var tempList = new List<ProductCategoryDTO>
             {
                 new ProductCategoryDTO { Id = 0, Name = "- - -" }
@@ -121,7 +121,7 @@ namespace ProductManagement.UI.ViewModel
         /// <returns></returns>
         public async Task ShowProductDetailAsync(ProductDTO product)
         {
-            var viewModel = new ProductDetailViewModel(product != null ? product.Id : 0, _productService, _productCateService, _productDetailVMLogger);
+            var viewModel = new ProductDetailViewModel(product != null ? product.Id : 0, ProductService,ProductCateService, ProductDetailVMLogger);
             var subForm = new ProductDetail(viewModel);
             subForm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             bool? result = subForm.ShowDialog();
@@ -156,9 +156,9 @@ namespace ProductManagement.UI.ViewModel
         /// Load product from DB
         /// </summary>
         /// <returns></returns>
-        private async Task LoadProductAsyn()
+        public async Task LoadProductAsyn()
         {
-            var result = await _productService.SearchAsync(SelectedCategoryId, SearchSKU, PagingParameter.CurrentPage, PagingParameter.PageSize, SortingParameter.SortColumn, SortingParameter.SortDirection);
+            var result = await ProductService.SearchAsync(SelectedCategoryId, SearchSKU, PagingParameter.CurrentPage, PagingParameter.PageSize, SortingParameter.SortColumn, SortingParameter.SortDirection);
             Products = new ObservableCollection<ProductDTO>(result.Items);
             FoundData = Products.Count > 0;
             PagingParameter.UpdateState(result.TotalCount);
@@ -240,7 +240,7 @@ namespace ProductManagement.UI.ViewModel
                 IsLoading = true;
                 try
                 {
-                    await _productService.DeleteAsync(product.Id);
+                    await ProductService.DeleteAsync(product.Id);
                     await LoadProductAsyn();
                 }
                 catch (Exception ex)

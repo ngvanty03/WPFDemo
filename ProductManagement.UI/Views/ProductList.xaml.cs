@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using ProductManagement.Application;
 using ProductManagement.Application.Interface;
+using ProductManagement.DTO;
 using ProductManagement.UI.ViewModel;
 using ProductManagement.UI.ViewModels;
 using System;
@@ -25,6 +26,7 @@ namespace ProductManagement.UI.Views
     /// </summary>
     public partial class ProductList : UserControl
     {
+       
         public ProductList(ProductListViewModel viewModel)
         {
             InitializeComponent();
@@ -46,6 +48,26 @@ namespace ProductManagement.UI.Views
 
             if (DataContext is ProductListViewModel vm)
                 vm.SortCommand.Execute(e);
+        }
+        private async void OpenProductDetail_Click(object sender, RoutedEventArgs e)
+        {           
+            if (sender is Button editButton)
+            {               
+                var currentProduct = editButton.CommandParameter as ProductDTO;
+                if (this.DataContext is ProductListViewModel mainVM)
+                {                  
+                    int productId = currentProduct != null ? currentProduct.Id : 0;
+                    var detailVM = new ProductDetailViewModel(productId, mainVM.ProductService, mainVM.ProductCateService, mainVM.ProductDetailVMLogger);
+                    var subForm = new ProductDetail(detailVM);                  
+                    subForm.Owner = Window.GetWindow(this);
+                    subForm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    detailVM.CloseAction = new Action(subForm.Close);
+                    if (subForm.ShowDialog() == true)
+                    {
+                        await mainVM.LoadProductAsyn();
+                    }
+                }
+            }
         }
     }
 }

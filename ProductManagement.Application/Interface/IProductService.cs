@@ -1,5 +1,4 @@
 ﻿using ProductManagement.DTO;
-using ProductManagement.Shared;
 
 namespace ProductManagement.Application
 {

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using ProductManagement.Application.Exceptions;
 using ProductManagement.DTO;
-using ProductManagement.Shared;
 namespace ProductManagement.Application
 {
     public class ProductService : IProductService

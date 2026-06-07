@@ -26,19 +26,18 @@
                HorizontalAlignment="Right"
                VerticalAlignment="Center"
                Content="Category:"></Label>
-        <ComboBox TabIndex="2" Grid.Row="0" Grid.Column="3"  Height="28" 
-               ItemsSource="{Binding Categories}" VerticalContentAlignment="Center"
-              SelectedValue="{Binding SelectedCategoryId, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-              SelectedValuePath="Id"
-              DisplayMemberPath="Name"
-               HorizontalAlignment="Left" Width="130"
-                  Margin="10,0,0,0"
-               VerticalAlignment="Center"></ComboBox>
+        <ComboBox TabIndex="2" Grid.Row="0" Grid.Column="3"  ItemsSource="{Binding Categories}" 
+                  SelectedValue="{Binding SelectedCategoryId, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                  SelectedValuePath="Id"
+                  DisplayMemberPath="Name"
+                  Width="130" Margin="10,0,0,0"></ComboBox>
         <Label Grid.Row="0" Grid.Column="0"
            HorizontalAlignment="Right"
            VerticalAlignment="Center"
            Content="SKU:"></Label>
-        <TextBox Name="txtSKU" TabIndex="1" Grid.Row="0" Grid.Column="1" Width="120" Height="28" Text="{Binding SearchSKU,Mode=TwoWay,UpdateSourceTrigger=LostFocus}" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"  ></TextBox>
+        <TextBox Name="txtSKU" TabIndex="1" Grid.Row="0" Grid.Column="1" Width="120" 
+                 Text="{Binding SearchSKU,Mode=TwoWay,UpdateSourceTrigger=LostFocus}" 
+                 ></TextBox>
         <StackPanel Margin="10,5,0,0" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Orientation="Horizontal">
             <Button IsDefault="True" TabIndex="3" Command="{Binding SearchCommand}" VerticalAlignment="Center" HorizontalAlignment="Left" Content="Search" Width="80" Height="30"></Button>
             <Button TabIndex="4" Command="{Binding ClearCommand}" Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="Clear" Width="80" Height="30"></Button>

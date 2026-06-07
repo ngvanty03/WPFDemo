@@ -31,18 +31,18 @@
                    Text="SKU:" VerticalAlignment="Center"/>
         <TextBox Name="txtSKU" TabIndex="1" Grid.Row="0"  Grid.Column="1" 
          Text="{Binding Product.SKU, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-         Margin="10,0,0,0" HorizontalAlignment="Stretch" Height="20" ></TextBox>
+         Margin="10,0,0,0" HorizontalAlignment="Stretch" Height="28" VerticalContentAlignment="Center" ></TextBox>
         <TextBlock Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" 
             Margin="0,0,0,0" 
             TextWrapping="NoWrap" 
             Text="Category:" VerticalAlignment="Center"/>
         <ComboBox TabIndex="2" Grid.Row="0" Grid.Column="3" 
-                   ItemsSource="{Binding Categories}"
+                   ItemsSource="{Binding Categories}" Height="28" VerticalContentAlignment="Center"
 SelectedValue="{Binding Product.CategoryId, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
 SelectedValuePath="Id"
 DisplayMemberPath="Name"
  HorizontalAlignment="Stretch"
-                  Margin="10,0,0,0" VerticalAlignment="Center" Height="20" />
+                  Margin="10,0,0,0" VerticalAlignment="Center" />
         
         
         <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" 
@@ -51,7 +51,7 @@ DisplayMemberPath="Name"
      Text="Name:" VerticalAlignment="Center"/>
         <TextBox TabIndex="3" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3"  
                  Text="{Binding Product.Name, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                 Margin="10,0,0,0" HorizontalAlignment="Stretch" Height="20" ></TextBox>
+                 Margin="10,0,0,0" HorizontalAlignment="Stretch" Height="28" VerticalContentAlignment="Center" ></TextBox>
         <TextBlock Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" 
 Margin="0,0,0,0" 
 TextWrapping="NoWrap" 

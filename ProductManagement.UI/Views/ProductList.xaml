@@ -10,6 +10,16 @@
              FocusManager.FocusedElement="{Binding ElementName=txtSKU}"
              >
     <Grid>
+        <Grid.Style>
+            <Style TargetType="Grid">
+                <Setter Property="IsEnabled" Value="True"/>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsLoading}" Value="True">
+                        <Setter Property="IsEnabled" Value="False"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Style>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100"></ColumnDefinition>
             <ColumnDefinition Width="120"></ColumnDefinition>
@@ -87,10 +97,12 @@
                     <Setter Property="IsTabStop" Value="False"/>
                 </Style>
             </DataGrid.RowStyle>
-            <DataGrid.Style>                
-                <Style TargetType="DataGrid">
+            <DataGrid.Style>
+                <Style TargetType="DataGrid">                    
                     <Setter Property="Visibility" Value="Visible"/>
-                    <Style.Triggers>
+
+                    <Style.Triggers>                       
+
                         <DataTrigger Binding="{Binding FoundData}" Value="False">
                             <Setter Property="Visibility" Value="Collapsed"/>
                         </DataTrigger>
@@ -129,9 +141,15 @@
                 <Style TargetType="TextBlock">
                     <Setter Property="Visibility" Value="Collapsed"/>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding FoundData}" Value="False">
-                            <Setter Property="Visibility" Value="Visible"/>
-                        </DataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsLoading}" Value="False"/>
+                                <Condition Binding="{Binding FoundData}" Value="False"/>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
                     </Style.Triggers>
                 </Style>
             </TextBlock.Style>

@@ -111,7 +111,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <Button TabIndex="7" Width="60" Content="Edit" Margin="10,0,0,0" Click="OpenProductDetail_Click" 
         CommandParameter="{Binding}" ></Button>
-                                <Button TabIndex="8" Width="60" Content="Delete" CommandParameter="{Binding}" Margin="10,0,0,0" Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" ></Button>
+                                <Button TabIndex="8" Width="60" Content="Delete" CommandParameter="{Binding}" Margin="10,0,0,0" Click="DeleteProduct_Click" ></Button>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

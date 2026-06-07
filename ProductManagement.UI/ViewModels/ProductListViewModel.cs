@@ -22,10 +22,7 @@ namespace ProductManagement.UI.ViewModel
             ProductDetailVMLogger = productDetailVMLogger;
             _productListVMLogger = productListVMLogger;
             SearchCommand = new AsyncRelayCommand(SearchProductAsyn);
-            ClearCommand = new AsyncRelayCommand(ClearAsyn);
-            EditCommand = new AsyncRelayCommand<ProductDTO>(ShowProductDetailAsync, CanAddNew);
-            AddNewCommand = new AsyncRelayCommand<ProductDTO>(ShowProductDetailAsync, CanAddNew);
-            DeleteCommand=new AsyncRelayCommand<ProductDTO>(DeleteAsyn, CanAddNew);
+            ClearCommand = new AsyncRelayCommand(ClearAsyn);            
             NextPageCommand = new AsyncRelayCommand(NextPageAsync);
             PrevPageCommand = new AsyncRelayCommand(PrevPageAsync);
             SortCommand = new AsyncRelayCommand<DataGridSortingEventArgs>(SortAsync);
@@ -56,9 +53,7 @@ namespace ProductManagement.UI.ViewModel
         [ObservableProperty] 
         private bool _foundData=true;
 
-        [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(AddNewCommand))]
-        [NotifyCanExecuteChangedFor(nameof(DeleteCommand))]
+        [ObservableProperty]      
         private bool _isLoading=false;
 
         [ObservableProperty] 
@@ -70,10 +65,7 @@ namespace ProductManagement.UI.ViewModel
 
         #region "Command"
         public IAsyncRelayCommand SearchCommand { get; set; }
-        public IAsyncRelayCommand ClearCommand { get; set; }
-        public IAsyncRelayCommand EditCommand { get; set; }
-        public IAsyncRelayCommand AddNewCommand { get; set; }
-        public IAsyncRelayCommand DeleteCommand { get; set; }
+        public IAsyncRelayCommand ClearCommand { get; set; }        
         public IAsyncRelayCommand NextPageCommand { get; }
         public IAsyncRelayCommand PrevPageCommand { get; }
         public IAsyncRelayCommand<DataGridSortingEventArgs> SortCommand { get; }
@@ -232,25 +224,21 @@ namespace ProductManagement.UI.ViewModel
         /// </summary>
         /// <param name="product"></param>
         /// <returns></returns>
-        public async Task DeleteAsyn(ProductDTO? product)
+        public async Task DeleteAsync(ProductDTO? product)
         {
-            var confirm = _dialogService.Confirm($"Do you want to delete the product SKU:{product.SKU}?");
-            if (confirm)
+            IsLoading = true;
+            try
             {
-                IsLoading = true;
-                try
-                {
-                    await ProductService.DeleteAsync(product.Id);
-                    await LoadProductAsyn();
-                }
-                catch (Exception ex)
-                {
-                    _productListVMLogger.LogError(ex.ToString());
-                }
-                finally
-                {
-                    IsLoading = false;
-                }                
+                await ProductService.DeleteAsync(product.Id);
+                await LoadProductAsyn();
+            }
+            catch (Exception ex)
+            {
+                _productListVMLogger.LogError(ex.ToString());
+            }
+            finally
+            {
+                IsLoading = false;
             }
         }
         /// <summary>

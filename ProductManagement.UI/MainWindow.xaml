@@ -7,7 +7,7 @@
         xmlns:Views="clr-namespace:ProductManagement.UI.Views" x:Class="ProductManagement.UI.MainWindow"
         mc:Ignorable="d"
         Title="Product management" WindowState="Maximized" MinHeight="450" MinWidth="800">
-    <Grid>
-        <ContentControl x:Name="MainContent" Margin="0,50,0,0" Grid.Column="0" Grid.Row="0"/>
+    <Grid KeyboardNavigation.IsTabStop="False" Focusable="False">
+        <ContentControl KeyboardNavigation.IsTabStop="False" Focusable="False" x:Name="MainContent" Margin="0,50,0,0" Grid.Column="0" Grid.Row="0"/>
     </Grid>
 </Window>

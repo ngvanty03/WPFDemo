@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using ProductManagement.Application;
+using ProductManagement.Application.Exceptions;
 using ProductManagement.DTO;
 using System;
 using System.Collections.Generic;
@@ -133,6 +134,11 @@ namespace ProductManagement.UI.ViewModels
                 else
                     await _productService.InsertAsync(Product);
                 Close();
+            }
+            catch (BusinessException ex)
+            {
+                ErrorMessage = ex.Message;
+                _logger.LogError(ex.ToString());
             }
             catch (Exception ex) {
                 ErrorMessage = "An error occurred while saving data";

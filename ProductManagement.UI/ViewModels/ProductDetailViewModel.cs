@@ -45,6 +45,9 @@ namespace ProductManagement.UI.ViewModels
         [ObservableProperty]
         private ProductDTO _product;
 
+        [ObservableProperty]
+        private bool _isLoading = false;
+
         #endregion
 
         #region "Command"
@@ -61,12 +64,17 @@ namespace ProductManagement.UI.ViewModels
         {
             try
             {
+                IsLoading = true;
                 await InitCategoryAsyn();
                 await LoadProductAsync();
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 ErrorMessage = "An error occurred while loading data";
                 _logger.LogError(ex.ToString());
+            }
+            finally {
+                IsLoading = false;
             }
         }
         /// <summary>
@@ -101,6 +109,7 @@ namespace ProductManagement.UI.ViewModels
         /// <returns></returns>
         private async Task SaveProductAsync()
         {
+            IsLoading = true;
             try
             {
                 //validate input
@@ -129,6 +138,7 @@ namespace ProductManagement.UI.ViewModels
                 ErrorMessage = "An error occurred while saving data";
                 _logger.LogError(ex.ToString());
             }
+            finally { IsLoading = false; }
         }        
         /// <summary>
         /// Close button event

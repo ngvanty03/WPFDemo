@@ -48,7 +48,7 @@
         <TextBox Name="txtSKU" TabIndex="1" Grid.Row="0" Grid.Column="1" Width="120" 
                  Text="{Binding SearchSKU,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
                  ></TextBox>
-        <StackPanel Margin="10,5,0,0" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Orientation="Horizontal">
+        <StackPanel Margin="0,15,0,0" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Orientation="Horizontal">
             <Button IsDefault="True" TabIndex="3" Command="{Binding SearchCommand}" VerticalAlignment="Center" HorizontalAlignment="Left" Content="Search" Width="80" Height="30"></Button>
             <Button TabIndex="4" Command="{Binding ClearCommand}" Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="Clear" Width="80" Height="30"></Button>
         </StackPanel>

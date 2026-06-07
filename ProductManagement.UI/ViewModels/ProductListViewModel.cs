@@ -105,23 +105,7 @@ namespace ProductManagement.UI.ViewModel
             };
             tempList.AddRange(result);
             Categories = new ObservableCollection<ProductCategoryDTO>(tempList);
-        }
-        /// <summary>
-        /// AddNew or Edit button event
-        /// </summary>
-        /// <param name="product">product=null: case AddNew, product!=null: case Edit</param>
-        /// <returns></returns>
-        public async Task ShowProductDetailAsync(ProductDTO product)
-        {
-            var viewModel = new ProductDetailViewModel(product != null ? product.Id : 0, ProductService,ProductCateService, ProductDetailVMLogger);
-            var subForm = new ProductDetail(viewModel);
-            subForm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            bool? result = subForm.ShowDialog();
-            if (result != null && result.Value)
-            {
-                await LoadProductAsyn();
-            }
-        }
+        }        
         /// <summary>
         /// Search button event
         /// </summary>

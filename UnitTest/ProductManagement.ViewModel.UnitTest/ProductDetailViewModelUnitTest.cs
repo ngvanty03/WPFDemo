@@ -23,7 +23,7 @@ namespace ProductManagement.Test
         [Fact(DisplayName = "Show require message when creating product with the product SKU is empty")]
         public async Task AsyncSaveCommand_ShouldRequire_SKU()
         {            
-            var viewModel = new ProductDetailViewModel(1, _mockProductService.Object, _mockProductCateService.Object, _mockProductDetailViewMOdelLogger.Object);
+            var viewModel = new ProductDetailViewModel(_mockProductService.Object, _mockProductCateService.Object, _mockProductDetailViewMOdelLogger.Object);
             viewModel.Product = new ProductDTO()
             {
                 SKU="",
@@ -38,7 +38,7 @@ namespace ProductManagement.Test
         [Fact(DisplayName = "Show require message when creating product with the product name is empty")]
         public async Task AsyncSaveCommand_ShouldRequire_Name()
         {            
-            var viewModel = new ProductDetailViewModel(1, _mockProductService.Object, _mockProductCateService.Object, _mockProductDetailViewMOdelLogger.Object);
+            var viewModel = new ProductDetailViewModel(_mockProductService.Object, _mockProductCateService.Object, _mockProductDetailViewMOdelLogger.Object);
             viewModel.Product = new ProductDTO()
             {
                 SKU = "1000",

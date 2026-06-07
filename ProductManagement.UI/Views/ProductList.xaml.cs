@@ -57,8 +57,8 @@ namespace ProductManagement.UI.Views
                 if (this.DataContext is ProductListViewModel mainVM)
                 {                  
                     int productId = currentProduct != null ? currentProduct.Id : 0;
-                    var detailVM = new ProductDetailViewModel(productId, mainVM.ProductService, mainVM.ProductCateService, mainVM.ProductDetailVMLogger);
-                    var subForm = new ProductDetail(detailVM);                  
+                    var detailVM = new ProductDetailViewModel(mainVM.ProductService, mainVM.ProductCateService, mainVM.ProductDetailVMLogger);
+                    var subForm = new ProductDetail(productId,detailVM);                  
                     subForm.Owner = Window.GetWindow(this);
                     subForm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                     detailVM.CloseAction = new Action(subForm.Close);
@@ -66,6 +66,7 @@ namespace ProductManagement.UI.Views
                     {
                         await mainVM.LoadProductAsyn();
                     }
+                    detailVM.CloseAction = null;
                 }
             }
         }

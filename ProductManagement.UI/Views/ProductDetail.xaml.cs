@@ -22,23 +22,17 @@ namespace ProductManagement.UI.Views
     /// Interaction logic for ProductDetail.xaml
     /// </summary>
     public partial class ProductDetail : Window
-    {      
-        public ProductDetail(ProductDetailViewModel viewModel)
+    {
+        public ProductDetail(int productId,ProductDetailViewModel viewModel)
         {
-            InitializeComponent();        
-            this.Loaded += ProductDetail_Loaded;
+            InitializeComponent();
             viewModel.CloseAction = new Action(this.Close);
             this.DataContext = viewModel;
-        }
-
-        private async void ProductDetail_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (this.DataContext is ProductDetailViewModel viewModel)
+            Loaded += async (_, _) =>
             {
-                await viewModel.InitDataAsync();
-            }
-        }
-
+                await viewModel.InitDataAsync(productId);
+            };
+        }      
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             e.Cancel = false;

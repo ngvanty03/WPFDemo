@@ -17,4 +17,18 @@ public partial class PagingParameters : ObservableObject
         HasPrevPage = CurrentPage > 1;
         HasNextPage = CurrentPage < TotalPages;
     }
+    public void NextPage()
+    {
+        if (CurrentPage < TotalPages)
+        {
+            CurrentPage++;
+        }
+    }
+    public void PrevPage()
+    {
+        if (CurrentPage > 1)
+        {
+            CurrentPage--;
+        }
+    }
 }

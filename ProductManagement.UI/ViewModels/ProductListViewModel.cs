@@ -171,7 +171,7 @@ namespace ProductManagement.UI.ViewModel
             IsLoading = true;
             try
             {
-                PagingParameter.CurrentPage++;
+                PagingParameter.NextPage();
                 await LoadProductAsyn();
             }
             catch (Exception ex)
@@ -192,7 +192,7 @@ namespace ProductManagement.UI.ViewModel
             IsLoading = true;
             try
             {
-                PagingParameter.CurrentPage--;
+                PagingParameter.PrevPage();
                 await LoadProductAsyn();
             }
             catch (Exception ex)

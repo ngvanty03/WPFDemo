@@ -22,15 +22,10 @@ namespace ProductManagement.UI.Views
     /// Interaction logic for ProductDetail.xaml
     /// </summary>
     public partial class ProductDetail : Window
-    {
-        private readonly IProductCategoryService _productCategoryService;
-        private readonly IProductService _productService;
-        public ProductDetail(int productId,IProductCategoryService productCategoryService, IProductService productService, ILogger<ProductDetailViewModel> _logger)
+    {      
+        public ProductDetail(ProductDetailViewModel viewModel)
         {
-            InitializeComponent();
-            _productCategoryService = productCategoryService;
-            _productService = productService;
-            var viewModel=new ProductDetailViewModel(productId,productService, productCategoryService, _logger);
+            InitializeComponent();        
             this.Loaded += ProductDetail_Loaded;
             viewModel.CloseAction = new Action(this.Close);
             this.DataContext = viewModel;

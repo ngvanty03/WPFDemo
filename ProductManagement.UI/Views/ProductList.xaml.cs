@@ -25,11 +25,10 @@ namespace ProductManagement.UI.Views
     /// </summary>
     public partial class ProductList : UserControl
     {
-        public ProductList(IDialogService dialogService,IProductService productService, IProductCategoryService productCateService,
-            ILogger<ProductDetailViewModel> productDetailVMLogger, ILogger<ProductListViewModel> productListVMLogger)
+        public ProductList(ProductListViewModel viewModel)
         {
             InitializeComponent();
-            this.DataContext = new ProductListViewModel(dialogService,productService, productCateService, productDetailVMLogger, productListVMLogger);
+            this.DataContext=viewModel;          
             this.Loaded += ProductList_Loaded;
         }
 

@@ -121,7 +121,8 @@ namespace ProductManagement.UI.ViewModel
         /// <returns></returns>
         public async Task ShowProductDetailAsync(ProductDTO product)
         {
-            var subForm = new ProductDetail(product != null ? product.Id : 0, _productCateService, _productService, _productDetailVMLogger);
+            var viewModel = new ProductDetailViewModel(product != null ? product.Id : 0, _productService, _productCateService, _productDetailVMLogger);
+            var subForm = new ProductDetail(viewModel);
             subForm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             bool? result = subForm.ShowDialog();
             if (result != null && result.Value)

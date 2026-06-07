@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ProductManagement.Application;
+using ProductManagement.Application.Interface;
 using ProductManagement.Infrastructure;
 using ProductManagement.UI.CustomDialog;
 using ProductManagement.UI.ViewModel;
@@ -45,7 +46,8 @@ namespace ProductManagement.UI
             var diaglogService = new DialogService();
             var productDetailVMLogger = loggerFactory.CreateLogger<ProductDetailViewModel>();
             var productListVMLogger = loggerFactory.CreateLogger<ProductListViewModel>();
-            MainContent.Content = new ProductList(diaglogService, productService, productCateService, productDetailVMLogger,productListVMLogger);
+            var productListVM = new ProductListViewModel(diaglogService, productService, productCateService, productDetailVMLogger, productListVMLogger);
+            MainContent.Content = new ProductList(productListVM);
         }
     }
 }

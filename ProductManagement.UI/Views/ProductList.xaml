@@ -117,7 +117,7 @@
                 <DataGridCheckBoxColumn ElementStyle="{StaticResource CenterCheckBoxStyle}" Width="80" Header="Is Active" 
                                         IsReadOnly="True" HeaderStyle="{StaticResource DataGridHeader}"
                                         Binding="{Binding IsActive}" SortMemberPath="IsActive"></DataGridCheckBoxColumn>
-                <DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="150">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">

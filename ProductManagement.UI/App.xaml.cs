@@ -45,14 +45,14 @@ namespace ProductManagement.UI
             });
             services.AddSingleton(new DatabaseOptions
             {
-                DBConnectionString = App.Configuration.GetConnectionString("DefaultConnection")
+                DBConnectionString = Configuration.GetConnectionString("DefaultConnection")
             });
             services.AddSingleton<IDialogService, DialogService>();
             services.AddSingleton<MainWindow>();
-            services.AddTransient<IProductRepository, ProductRepository>();
-            services.AddTransient<IProductCategoryRepository, ProductCategoryRepository>();
-            services.AddTransient<IProductService, ProductService>();
-            services.AddTransient<IProductCategoryService, ProductCategoryService>();          
+            services.AddSingleton<IProductRepository, ProductRepository>();
+            services.AddSingleton<IProductCategoryRepository, ProductCategoryRepository>();
+            services.AddSingleton<IProductService, ProductService>();
+            services.AddSingleton<IProductCategoryService, ProductCategoryService>();          
             services.AddTransient<ProductListViewModel>();
             services.AddTransient<ProductDetailViewModel>();
         }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using ProductManagement.Application;
 using ProductManagement.Application.Interface;
 using ProductManagement.DTO;
@@ -57,7 +58,7 @@ namespace ProductManagement.UI.Views
                 if (this.DataContext is ProductListViewModel mainVM)
                 {                  
                     int productId = currentProduct != null ? currentProduct.Id : 0;
-                    var detailVM = new ProductDetailViewModel(mainVM.ProductService, mainVM.ProductCateService, mainVM.ProductDetailVMLogger);
+                    var detailVM = App.Services.GetRequiredService<ProductDetailViewModel>();
                     var subForm = new ProductDetail(productId,detailVM);                  
                     subForm.Owner = Window.GetWindow(this);
                     subForm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -65,8 +66,7 @@ namespace ProductManagement.UI.Views
                     if (subForm.ShowDialog() == true)
                     {
                         await mainVM.LoadProductAsyn();
-                    }
-                    detailVM.CloseAction = null;
+                    }                    
                 }
             }
         }

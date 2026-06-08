@@ -14,26 +14,16 @@ namespace ProductManagement.UI.ViewModel
 {
     public partial class ProductListViewModel : ObservableObject
     {        
-        public ProductListViewModel(IDialogService dialogService,IProductService productService, IProductCategoryService productCateService, ILogger<ProductDetailViewModel> productDetailVMLogger, ILogger<ProductListViewModel> productListVMLogger)
+        public ProductListViewModel(IDialogService dialogService,IProductService productService, IProductCategoryService productCateService, ILogger<ProductListViewModel> productListVMLogger)
         {
             _productService = productService;
             _productCateService = productCateService;
             _dialogService = dialogService;
-            _productDetailVMLogger = productDetailVMLogger;
-            _productListVMLogger = productListVMLogger;
-            SearchCommand = new AsyncRelayCommand(SearchProductAsyn);
-            ClearCommand = new AsyncRelayCommand(ClearAsyn);            
-            NextPageCommand = new AsyncRelayCommand(NextPageAsync);
-            PrevPageCommand = new AsyncRelayCommand(PrevPageAsync);
-            SortCommand = new AsyncRelayCommand<DataGridSortingEventArgs>(SortAsync);
-            EditCommand = new AsyncRelayCommand<ProductDTO>(ShowProductDetailAsync);
-            AddNewCommand = new AsyncRelayCommand<ProductDTO>(ShowProductDetailAsync);
-            DeleteCommand = new AsyncRelayCommand<ProductDTO>(DeleteAsyn);
+            _productListVMLogger = productListVMLogger;           
             ResetPageData();
         }
 
-        #region "Properties"
-        private readonly ILogger<ProductDetailViewModel> _productDetailVMLogger;
+        #region "Properties"        
         private readonly ILogger<ProductListViewModel> _productListVMLogger;
         private readonly IProductService _productService;
         private readonly IProductCategoryService _productCateService;
@@ -66,16 +56,6 @@ namespace ProductManagement.UI.ViewModel
         private SortingParameters _sortingParameter = new();
         #endregion
 
-        #region "Command"
-        public IAsyncRelayCommand SearchCommand { get; set; }
-        public IAsyncRelayCommand ClearCommand { get; set; }        
-        public IAsyncRelayCommand NextPageCommand { get; }
-        public IAsyncRelayCommand PrevPageCommand { get; }
-        public IAsyncRelayCommand<DataGridSortingEventArgs> SortCommand { get; }
-        public IAsyncRelayCommand EditCommand { get; set; }
-        public IAsyncRelayCommand AddNewCommand { get; set; }
-        public IAsyncRelayCommand DeleteCommand { get; set; }
-        #endregion
 
         #region "Functions"
         /// <summary>
@@ -111,12 +91,13 @@ namespace ProductManagement.UI.ViewModel
             };
             tempList.AddRange(result);
             Categories = new ObservableCollection<ProductCategoryDTO>(tempList);
-        }        
+        }
         /// <summary>
         /// Search button event
         /// </summary>
         /// <returns></returns>
-        private async Task SearchProductAsyn()
+        [RelayCommand]
+        private async Task SearchProductAsync()
         {
             IsLoading = true;
             try
@@ -148,7 +129,8 @@ namespace ProductManagement.UI.ViewModel
         /// <summary>
         /// Paging event:  next page event
         /// </summary>
-        /// <returns></returns>
+        /// <returns></returns>  
+        [RelayCommand]
         private async Task NextPageAsync()
         {
             IsLoading = true;
@@ -169,7 +151,8 @@ namespace ProductManagement.UI.ViewModel
         /// <summary>
         /// Paging event:  previous page event
         /// </summary>
-        /// <returns></returns>
+        /// <returns></returns>  
+        [RelayCommand]
         private async Task PrevPageAsync()
         {
             IsLoading = true;
@@ -191,7 +174,9 @@ namespace ProductManagement.UI.ViewModel
         /// Clean button event
         /// </summary>
         /// <returns></returns>
-        private async Task ClearAsyn() {
+        /// 
+        [RelayCommand]
+        private async Task ClearAsync() {
             IsLoading = true;   
             try
             {
@@ -208,34 +193,13 @@ namespace ProductManagement.UI.ViewModel
             {
                 IsLoading = false;
             }
-        }     
-        /// <summary>
-        /// Delete button event
-        /// </summary>
-        /// <param name="product"></param>
-        /// <returns></returns>
-        public async Task DeleteAsync(ProductDTO? product)
-        {
-            IsLoading = true;
-            try
-            {
-                await _productService.DeleteAsync(product.Id);
-                await LoadProductAsync();
-            }
-            catch (Exception ex)
-            {
-                _productListVMLogger.LogError(ex.ToString());
-            }
-            finally
-            {
-                IsLoading = false;
-            }
-        }
+        }    
         /// <summary>
         /// Sort event
         /// </summary>
         /// <param name="e"></param>
         /// <returns></returns>
+        [RelayCommand]
         private async Task SortAsync(DataGridSortingEventArgs? e)
         {
             if (e is null) return;           
@@ -269,6 +233,7 @@ namespace ProductManagement.UI.ViewModel
         /// </summary>
         /// <param name="product"></param>
         /// <returns></returns>
+        [RelayCommand]
         public async Task ShowProductDetailAsync(ProductDTO? product)
         {
             var subFormOpen = _dialogService.ShowProductDetailForm(product?.Id ?? 0);//product is null --> get value = 0 
@@ -282,7 +247,8 @@ namespace ProductManagement.UI.ViewModel
         /// </summary>
         /// <param name="product"></param>
         /// <returns></returns>
-        public async Task DeleteAsyn(ProductDTO? product)
+        [RelayCommand]
+        public async Task DeleteAsync(ProductDTO? product)
         {
             var confirm = _dialogService.Confirm($"Do you want to delete the product SKU:{product.SKU}?");
             if (confirm)

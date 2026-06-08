@@ -48,7 +48,7 @@
                  Text="{Binding SearchSKU,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
                  ></TextBox>
         <StackPanel Margin="0,15,0,0" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Orientation="Horizontal">
-            <Button IsDefault="True" TabIndex="3" Command="{Binding SearchCommand}" VerticalAlignment="Center" HorizontalAlignment="Left" Content="Search" Width="80" Height="30"></Button>
+            <Button IsDefault="True" TabIndex="3" Command="{Binding SearchProductCommand}" VerticalAlignment="Center" HorizontalAlignment="Left" Content="Search" Width="80" Height="30"></Button>
             <Button TabIndex="4" Command="{Binding ClearCommand}" Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Content="Clear" Width="80" Height="30"></Button>
         </StackPanel>
         <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4">
@@ -61,7 +61,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="100"></RowDefinition>
             </Grid.RowDefinitions>
-            <Button Grid.Row="0" Grid.Column="0" Command="{Binding AddNewCommand}" VerticalAlignment="Center" HorizontalAlignment="Left" Content="Add new" Height="30" Width="80"></Button>
+            <Button Grid.Row="0" Grid.Column="0" Command="{Binding ShowProductDetailCommand}" VerticalAlignment="Center" HorizontalAlignment="Left" Content="Add new" Height="30" Width="80"></Button>
             <cc:CustomPagingControl  Grid.Row="0" Grid.Column="1"
                 PrevPageCommand="{Binding PrevPageCommand}"
                 NextPageCommand="{Binding NextPageCommand}"
@@ -121,7 +121,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Button TabIndex="7" Width="60" Height="30" Content="Edit" Margin="10,0,0,0" Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                <Button TabIndex="7" Width="60" Height="30" Content="Edit" Margin="10,0,0,0" Command="{Binding DataContext.ShowProductDetailCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
         CommandParameter="{Binding}" ></Button>
                                 <Button TabIndex="8" Width="60" Height="30" Content="Delete" CommandParameter="{Binding}" Margin="10,0,0,0" Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" ></Button>
                             </StackPanel>

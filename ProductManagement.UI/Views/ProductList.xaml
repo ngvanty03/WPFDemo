@@ -111,11 +111,13 @@
             </DataGrid.Style>
             <DataGrid.Columns>
                 <DataGridTextColumn ElementStyle="{StaticResource CenterTextStyle}" 
-                                    Width="60" Header="SKU" 
+                                    Width="60" Header="SKU"  HeaderStyle="{StaticResource DataGridHeader}"
                                     Binding="{Binding SKU}" SortMemberPath="SKU"></DataGridTextColumn>
-                <DataGridTextColumn ElementStyle="{StaticResource CenterTextStyle}" 
+                <DataGridTextColumn ElementStyle="{StaticResource CenterTextStyle}"  HeaderStyle="{StaticResource DataGridHeader}"
                                     Width="*" Header="Name" Binding="{Binding Name}" SortMemberPath="Name"></DataGridTextColumn>
-                <DataGridCheckBoxColumn ElementStyle="{StaticResource CenterCheckBoxStyle}" Width="80" Header="Is Active" IsReadOnly="True" Binding="{Binding IsActive}"></DataGridCheckBoxColumn>
+                <DataGridCheckBoxColumn ElementStyle="{StaticResource CenterCheckBoxStyle}" Width="80" Header="Is Active" 
+                                        IsReadOnly="True" HeaderStyle="{StaticResource DataGridHeader}"
+                                        Binding="{Binding IsActive}" SortMemberPath="IsActive"></DataGridCheckBoxColumn>
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

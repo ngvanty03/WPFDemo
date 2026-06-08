@@ -69,5 +69,10 @@
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Text" Value="Loading..." />
         </Style>
+        <Style x:Key="DataGridHeader" TargetType="DataGridColumnHeader">
+            <Setter Property="HorizontalContentAlignment" Value="Center"></Setter>
+            <Setter Property="FontWeight" Value="Bold"></Setter>
+            <Setter Property="Cursor" Value="Hand"></Setter>
+        </Style>
     </Application.Resources>
 </Application>

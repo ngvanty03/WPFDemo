@@ -24,8 +24,6 @@ namespace ProductManagement.UI.ViewModels
             _productCateService = productCateService;
             _dialogService=dialogService;
             _logger = logger;
-            SaveCommand = new AsyncRelayCommand(SaveProductAsync);
-            CloseCommand = new RelayCommand(() => _dialogService.CloseDialog(this, false));
         }
 
         #region "Private properties"
@@ -48,11 +46,6 @@ namespace ProductManagement.UI.ViewModels
         [ObservableProperty]
         private bool _isLoading = false;
 
-        #endregion
-
-        #region "Command"
-        public IAsyncRelayCommand SaveCommand { get; set; }
-        public IRelayCommand CloseCommand { get; set; }
         #endregion
 
         #region "Functions"
@@ -103,10 +96,14 @@ namespace ProductManagement.UI.ViewModels
             }
             Product = await _productService.GetByIdAsync(productId);            
         }
+        #endregion
+
+        #region "Command"
         /// <summary>
         /// Save to DB
         /// </summary>
         /// <returns></returns>
+        [RelayCommand]
         private async Task SaveProductAsync()
         {
             IsLoading = true;
@@ -130,7 +127,7 @@ namespace ProductManagement.UI.ViewModels
                 }
                 var result = false;
                 if (Product.Id > 0)
-                    result= await _productService.UpdateAsync(Product);
+                    result = await _productService.UpdateAsync(Product);
                 else
                     result = await _productService.InsertAsync(Product);
                 if (result)
@@ -146,6 +143,11 @@ namespace ProductManagement.UI.ViewModels
                 _logger.LogError(ex.ToString());
             }
             finally { IsLoading = false; }
+        }
+        [RelayCommand]
+        private void Close()
+        {
+            _dialogService.CloseDialog(this, false);
         }
         #endregion
     }

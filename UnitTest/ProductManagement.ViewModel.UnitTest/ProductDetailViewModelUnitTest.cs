@@ -35,7 +35,7 @@ namespace ProductManagement.Test
                 Description="",
                 IsActive=true,
             };
-            await viewModel.SaveCommand.ExecuteAsync(null);
+            await viewModel.SaveProductCommand.ExecuteAsync(null);
             Assert.Equal("Please input the product SKU", viewModel.ErrorMessage);           
         }
         [Fact(DisplayName = "Show require message when creating product with the product name is empty")]
@@ -50,7 +50,7 @@ namespace ProductManagement.Test
                 Description = "",
                 IsActive = true,
             };
-            await viewModel.SaveCommand.ExecuteAsync(null);
+            await viewModel.SaveProductCommand.ExecuteAsync(null);
             Assert.Equal("Please input the product name", viewModel.ErrorMessage);
         }
     }

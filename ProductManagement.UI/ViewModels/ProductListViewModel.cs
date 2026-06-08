@@ -91,7 +91,31 @@ namespace ProductManagement.UI.ViewModel
             };
             tempList.AddRange(result);
             Categories = new ObservableCollection<ProductCategoryDTO>(tempList);
+        }        
+        /// <summary>
+        /// Load product from DB
+        /// </summary>
+        /// <returns></returns>
+        public async Task LoadProductAsync()
+        {
+            var result = await _productService.SearchAsync(SelectedCategoryId, SearchSKU, PagingParameter.CurrentPage, PagingParameter.PageSize, SortingParameter.SortColumn, SortingParameter.SortDirection);
+            Products = new ObservableCollection<ProductDTO>(result.Items);
+            FoundData = Products.Count > 0;
+            PagingParameter.UpdateState(result.TotalCount);
+        }        
+          
+        /// <summary>
+        /// reset data when loading or sorting 
+        /// </summary>
+        private void ResetPageData()
+        {
+            SortingParameter.SortColumn = "Name";//default sorting
+            SortingParameter.SortDirection = "ASC";
+            PagingParameter.CurrentPage = 1;
         }
+        #endregion
+
+        #region "Command"
         /// <summary>
         /// Search button event
         /// </summary>
@@ -116,15 +140,58 @@ namespace ProductManagement.UI.ViewModel
 
         }
         /// <summary>
-        /// Load product from DB
+        /// Delete product
         /// </summary>
+        /// <param name="product"></param>
         /// <returns></returns>
-        public async Task LoadProductAsync()
+        [RelayCommand]
+        public async Task DeleteAsync(ProductDTO? product)
         {
-            var result = await _productService.SearchAsync(SelectedCategoryId, SearchSKU, PagingParameter.CurrentPage, PagingParameter.PageSize, SortingParameter.SortColumn, SortingParameter.SortDirection);
-            Products = new ObservableCollection<ProductDTO>(result.Items);
-            FoundData = Products.Count > 0;
-            PagingParameter.UpdateState(result.TotalCount);
+            var confirm = _dialogService.Confirm($"Do you want to delete the product SKU:{product.SKU}?");
+            if (confirm)
+            {
+                await _productService.DeleteAsync(product.Id);
+                await LoadProductAsync();
+            }
+        }
+        /// <summary>
+        /// Open product detail popup
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns></returns>
+        [RelayCommand]
+        public async Task ShowProductDetailAsync(ProductDTO? product)
+        {
+            var subFormOpen = _dialogService.ShowProductDetailForm(product?.Id ?? 0);//product is null --> get value = 0 
+            if (subFormOpen != null && subFormOpen.Value)
+            {
+                await LoadProductAsync();
+            }
+        }
+        /// <summary>
+        /// Sort event
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        [RelayCommand]
+        private async Task SortAsync(DataGridSortingEventArgs? e)
+        {
+            if (e is null) return;
+            IsLoading = true;
+            try
+            {
+                SortingParameter.UpdateState(e.Column.SortMemberPath);
+                PagingParameter.CurrentPage = 1;
+                await LoadProductAsync();
+            }
+            catch (Exception ex)
+            {
+                _productListVMLogger.LogError(ex.ToString());
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
         /// <summary>
         /// Paging event:  next page event
@@ -169,15 +236,16 @@ namespace ProductManagement.UI.ViewModel
             {
                 IsLoading = false;
             }
-        }       
+        }
         /// <summary>
         /// Clean button event
         /// </summary>
         /// <returns></returns>
         /// 
         [RelayCommand]
-        private async Task ClearAsync() {
-            IsLoading = true;   
+        private async Task ClearAsync()
+        {
+            IsLoading = true;
             try
             {
                 SelectedCategoryId = 0;
@@ -192,69 +260,6 @@ namespace ProductManagement.UI.ViewModel
             finally
             {
                 IsLoading = false;
-            }
-        }    
-        /// <summary>
-        /// Sort event
-        /// </summary>
-        /// <param name="e"></param>
-        /// <returns></returns>
-        [RelayCommand]
-        private async Task SortAsync(DataGridSortingEventArgs? e)
-        {
-            if (e is null) return;           
-            IsLoading = true;
-            try
-            {
-                SortingParameter.UpdateState(e.Column.SortMemberPath);
-                PagingParameter.CurrentPage = 1;
-                await LoadProductAsync();
-            }
-            catch (Exception ex)
-            {
-                _productListVMLogger.LogError(ex.ToString());
-            }
-            finally
-            {
-                IsLoading = false;
-            }
-        }        
-        /// <summary>
-        /// reset data when loading or sorting 
-        /// </summary>
-        private void ResetPageData()
-        {
-            SortingParameter.SortColumn = "Name";//default sorting
-            SortingParameter.SortDirection = "ASC";
-            PagingParameter.CurrentPage = 1;
-        }
-        /// <summary>
-        /// Open product detail popup
-        /// </summary>
-        /// <param name="product"></param>
-        /// <returns></returns>
-        [RelayCommand]
-        public async Task ShowProductDetailAsync(ProductDTO? product)
-        {
-            var subFormOpen = _dialogService.ShowProductDetailForm(product?.Id ?? 0);//product is null --> get value = 0 
-            if (subFormOpen != null && subFormOpen.Value)
-            {
-                await LoadProductAsync();
-            }
-        }
-        /// <summary>
-        /// Delete product
-        /// </summary>
-        /// <param name="product"></param>
-        /// <returns></returns>
-        [RelayCommand]
-        public async Task DeleteAsync(ProductDTO? product)
-        {
-            var confirm = _dialogService.Confirm($"Do you want to delete the product SKU:{product.SKU}?");
-            if (confirm)
-            {
-                await _productService.DeleteAsync(product.Id);
-                await LoadProductAsync();
             }
         }
         #endregion

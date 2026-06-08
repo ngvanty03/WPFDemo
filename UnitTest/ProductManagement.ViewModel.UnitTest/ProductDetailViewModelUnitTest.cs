@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
 using ProductManagement.Application;
+using ProductManagement.Application.Interface;
 using ProductManagement.DTO;
 using ProductManagement.UI.ViewModels;
 using Xunit;
@@ -10,6 +11,7 @@ namespace ProductManagement.Test
     {
         private readonly Mock<IProductService> _mockProductService;
         private readonly Mock<IProductCategoryService> _mockProductCateService;
+        private readonly Mock<IDialogService> _mockDialogService;
         private readonly Mock<ILogger<ProductDetailViewModel>> _mockProductDetailViewMOdelLogger;
         public ProductDetailViewModelUnitTest()
         {
@@ -18,12 +20,13 @@ namespace ProductManagement.Test
 
             _mockProductService = new Mock<IProductService>();
             _mockProductCateService = new Mock<IProductCategoryService>();
+            _mockDialogService = new Mock<IDialogService>();
             _mockProductDetailViewMOdelLogger = new Mock<ILogger<ProductDetailViewModel>>();
         }
         [Fact(DisplayName = "Show require message when creating product with the product SKU is empty")]
         public async Task AsyncSaveCommand_ShouldRequire_SKU()
         {            
-            var viewModel = new ProductDetailViewModel(_mockProductService.Object, _mockProductCateService.Object, _mockProductDetailViewMOdelLogger.Object);
+            var viewModel = new ProductDetailViewModel(_mockDialogService.Object,_mockProductService.Object, _mockProductCateService.Object, _mockProductDetailViewMOdelLogger.Object);
             viewModel.Product = new ProductDTO()
             {
                 SKU="",
@@ -38,7 +41,7 @@ namespace ProductManagement.Test
         [Fact(DisplayName = "Show require message when creating product with the product name is empty")]
         public async Task AsyncSaveCommand_ShouldRequire_Name()
         {            
-            var viewModel = new ProductDetailViewModel(_mockProductService.Object, _mockProductCateService.Object, _mockProductDetailViewMOdelLogger.Object);
+            var viewModel = new ProductDetailViewModel(_mockDialogService.Object,_mockProductService.Object, _mockProductCateService.Object, _mockProductDetailViewMOdelLogger.Object);
             viewModel.Product = new ProductDTO()
             {
                 SKU = "1000",

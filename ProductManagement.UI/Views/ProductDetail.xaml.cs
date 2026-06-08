@@ -23,20 +23,10 @@ namespace ProductManagement.UI.Views
     /// </summary>
     public partial class ProductDetail : Window
     {
-        public ProductDetail(int productId,ProductDetailViewModel viewModel)
+        public ProductDetail(ProductDetailViewModel viewModel)
         {
-            InitializeComponent();
-            viewModel.CloseAction = new Action(this.Close);
+            InitializeComponent();            
             this.DataContext = viewModel;
-            Loaded += async (_, _) =>
-            {
-                await viewModel.InitDataAsync(productId);
-            };
-        }      
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            e.Cancel = false;
-            this.DialogResult = true;
-        }
+        }              
     }
 }

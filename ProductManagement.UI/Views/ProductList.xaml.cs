@@ -49,43 +49,6 @@ namespace ProductManagement.UI.Views
 
             if (DataContext is ProductListViewModel vm)
                 vm.SortCommand.Execute(e);
-        }
-        private async void OpenProductDetail_Click(object sender, RoutedEventArgs e)
-        {           
-            if (sender is Button editButton)
-            {               
-                var currentProduct = editButton.CommandParameter as ProductDTO;
-                if (this.DataContext is ProductListViewModel mainVM)
-                {                  
-                    int productId = currentProduct != null ? currentProduct.Id : 0;
-                    var detailVM = App.Services.GetRequiredService<ProductDetailViewModel>();
-                    var subForm = new ProductDetail(productId,detailVM);                  
-                    subForm.Owner = Window.GetWindow(this);
-                    subForm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                    detailVM.CloseAction = new Action(subForm.Close);
-                    if (subForm.ShowDialog() == true)
-                    {
-                        await mainVM.LoadProductAsyn();
-                    }                    
-                }
-            }
-        }
-        private async void DeleteProduct_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is Button editButton)
-            {
-                var currentProduct = editButton.CommandParameter as ProductDTO;
-                if (this.DataContext is ProductListViewModel mainVM)
-                {
-                    var result = MessageBox.Show($"Do you want to delete the product SKU:{currentProduct.SKU}?", "Delete product",
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Question);
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        await mainVM.DeleteAsync(currentProduct);
-                    }                    
-                }
-            }
-        }
+        }        
     }
 }

@@ -4,8 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProductManagement.UI.Views"
-        mc:Ignorable="d"
-        Closing="Window_Closing" WindowStartupLocation="CenterOwner"        
+        mc:Ignorable="d"        
         ResizeMode="NoResize"
         Title="Product Detail" Height="400" Width="550"
         FocusManager.FocusedElement="{Binding ElementName=txtSKU}">

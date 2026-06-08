@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using ProductManagement.Application;
 using ProductManagement.Application.Exceptions;
+using ProductManagement.Application.Interface;
 using ProductManagement.DTO;
 using System;
 using System.Collections.Generic;
@@ -16,22 +17,22 @@ using System.Windows.Input;
 namespace ProductManagement.UI.ViewModels
 {
     public partial class ProductDetailViewModel : ObservableObject
-    {
-        public Action CloseAction { get; set; }//event to close form
-        
-        public ProductDetailViewModel(IProductService productService, IProductCategoryService productCateService, ILogger<ProductDetailViewModel> logger)
+    {        
+        public ProductDetailViewModel(IDialogService dialogService,IProductService productService, IProductCategoryService productCateService, ILogger<ProductDetailViewModel> logger)
         { 
             _productService = productService;
             _productCateService = productCateService;
+            _dialogService=dialogService;
             _logger = logger;
             SaveCommand = new AsyncRelayCommand(SaveProductAsync);
-            CloseCommand = new RelayCommand(Close);
+            CloseCommand = new RelayCommand(() => _dialogService.CloseDialog(this, false));
         }
 
         #region "Private properties"
         private readonly ILogger<ProductDetailViewModel> _logger;        
         private readonly IProductService _productService;
         private readonly IProductCategoryService _productCateService;
+        private readonly IDialogService _dialogService;
         #endregion
 
         #region "Binding Properties"       
@@ -51,7 +52,7 @@ namespace ProductManagement.UI.ViewModels
 
         #region "Command"
         public IAsyncRelayCommand SaveCommand { get; set; }
-        public ICommand CloseCommand { get; set; }
+        public IRelayCommand CloseCommand { get; set; }
         #endregion
 
         #region "Functions"
@@ -127,11 +128,13 @@ namespace ProductManagement.UI.ViewModels
                     ErrorMessage = "Please input the product name";
                     return;
                 }
+                var result = false;
                 if (Product.Id > 0)
-                    await _productService.UpdateAsync(Product);
+                    result= await _productService.UpdateAsync(Product);
                 else
-                    await _productService.InsertAsync(Product);
-                Close();
+                    result = await _productService.InsertAsync(Product);
+                if (result)
+                    _dialogService.CloseDialog(this, true);
             }
             catch (BusinessException ex)
             {
@@ -143,13 +146,6 @@ namespace ProductManagement.UI.ViewModels
                 _logger.LogError(ex.ToString());
             }
             finally { IsLoading = false; }
-        }        
-        /// <summary>
-        /// Close button event
-        /// </summary>
-        public void Close()
-        {            
-            CloseAction?.Invoke();
         }
         #endregion
     }

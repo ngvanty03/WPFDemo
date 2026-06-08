@@ -16,24 +16,27 @@ namespace ProductManagement.UI.ViewModel
     {        
         public ProductListViewModel(IDialogService dialogService,IProductService productService, IProductCategoryService productCateService, ILogger<ProductDetailViewModel> productDetailVMLogger, ILogger<ProductListViewModel> productListVMLogger)
         {
-            ProductService = productService;
-            ProductCateService = productCateService;
+            _productService = productService;
+            _productCateService = productCateService;
             _dialogService = dialogService;
-            ProductDetailVMLogger = productDetailVMLogger;
+            _productDetailVMLogger = productDetailVMLogger;
             _productListVMLogger = productListVMLogger;
             SearchCommand = new AsyncRelayCommand(SearchProductAsyn);
             ClearCommand = new AsyncRelayCommand(ClearAsyn);            
             NextPageCommand = new AsyncRelayCommand(NextPageAsync);
             PrevPageCommand = new AsyncRelayCommand(PrevPageAsync);
             SortCommand = new AsyncRelayCommand<DataGridSortingEventArgs>(SortAsync);
+            EditCommand = new AsyncRelayCommand<ProductDTO>(ShowProductDetailAsync);
+            AddNewCommand = new AsyncRelayCommand<ProductDTO>(ShowProductDetailAsync);
+            DeleteCommand = new AsyncRelayCommand<ProductDTO>(DeleteAsyn);
             ResetPageData();
         }
 
         #region "Properties"
-        public readonly ILogger<ProductDetailViewModel> ProductDetailVMLogger;
+        private readonly ILogger<ProductDetailViewModel> _productDetailVMLogger;
         private readonly ILogger<ProductListViewModel> _productListVMLogger;
-        public readonly IProductService ProductService;
-        public readonly IProductCategoryService ProductCateService;
+        private readonly IProductService _productService;
+        private readonly IProductCategoryService _productCateService;
         private readonly IDialogService _dialogService;
         #endregion
 
@@ -69,6 +72,9 @@ namespace ProductManagement.UI.ViewModel
         public IAsyncRelayCommand NextPageCommand { get; }
         public IAsyncRelayCommand PrevPageCommand { get; }
         public IAsyncRelayCommand<DataGridSortingEventArgs> SortCommand { get; }
+        public IAsyncRelayCommand EditCommand { get; set; }
+        public IAsyncRelayCommand AddNewCommand { get; set; }
+        public IAsyncRelayCommand DeleteCommand { get; set; }
         #endregion
 
         #region "Functions"
@@ -98,7 +104,7 @@ namespace ProductManagement.UI.ViewModel
         /// <returns></returns>
         private async Task InitCategoryAsyn()
         {
-            var result = await ProductCateService.GetAllActiveAsync();
+            var result = await _productCateService.GetAllActiveAsync();
             var tempList = new List<ProductCategoryDTO>
             {
                 new ProductCategoryDTO { Id = 0, Name = "- - -" }
@@ -134,7 +140,7 @@ namespace ProductManagement.UI.ViewModel
         /// <returns></returns>
         public async Task LoadProductAsyn()
         {
-            var result = await ProductService.SearchAsync(SelectedCategoryId, SearchSKU, PagingParameter.CurrentPage, PagingParameter.PageSize, SortingParameter.SortColumn, SortingParameter.SortDirection);
+            var result = await _productService.SearchAsync(SelectedCategoryId, SearchSKU, PagingParameter.CurrentPage, PagingParameter.PageSize, SortingParameter.SortColumn, SortingParameter.SortDirection);
             Products = new ObservableCollection<ProductDTO>(result.Items);
             FoundData = Products.Count > 0;
             PagingParameter.UpdateState(result.TotalCount);
@@ -213,7 +219,7 @@ namespace ProductManagement.UI.ViewModel
             IsLoading = true;
             try
             {
-                await ProductService.DeleteAsync(product.Id);
+                await _productService.DeleteAsync(product.Id);
                 await LoadProductAsyn();
             }
             catch (Exception ex)
@@ -248,16 +254,7 @@ namespace ProductManagement.UI.ViewModel
             {
                 IsLoading = false;
             }
-        }
-        /// <summary>
-        /// Allow AddNew command
-        /// </summary>
-        /// <param name="product"></param>
-        /// <returns></returns>
-        private bool CanAddNew(ProductDTO product)
-        {
-            return !IsLoading;
-        }
+        }        
         /// <summary>
         /// reset data when loading or sorting 
         /// </summary>
@@ -266,7 +263,34 @@ namespace ProductManagement.UI.ViewModel
             SortingParameter.SortColumn = "Name";//default sorting
             SortingParameter.SortDirection = "ASC";
             PagingParameter.CurrentPage = 1;
-        }        
+        }
+        /// <summary>
+        /// Open product detail popup
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns></returns>
+        public async Task ShowProductDetailAsync(ProductDTO? product)
+        {
+            var subFormOpen = _dialogService.ShowProductDetailForm(product?.Id ?? 0);//product is null --> get value = 0 
+            if (subFormOpen != null && subFormOpen.Value)
+            {
+                await LoadProductAsyn();
+            }
+        }
+        /// <summary>
+        /// Delete product
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns></returns>
+        public async Task DeleteAsyn(ProductDTO? product)
+        {
+            var confirm = _dialogService.Confirm($"Do you want to delete the product SKU:{product.SKU}?");
+            if (confirm)
+            {
+                await _productService.DeleteAsync(product.Id);
+                await LoadProductAsyn();
+            }
+        }
         #endregion
     }
 }

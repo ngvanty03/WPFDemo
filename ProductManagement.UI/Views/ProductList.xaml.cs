@@ -31,18 +31,13 @@ namespace ProductManagement.UI.Views
         public ProductList(ProductListViewModel viewModel)
         {
             InitializeComponent();
-            this.DataContext=viewModel;          
-            this.Loaded += ProductList_Loaded;
-        }
-
-        private async void ProductList_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (this.DataContext is ProductListViewModel viewModel)
+            this.DataContext=viewModel;
+            Loaded += async (_, _) =>
             {
                 await viewModel.InitDataAsync();
-            }
-            txtSKU.Focus();
-        }
+                txtSKU.Focus();
+            };
+        }       
         private void DataGrid_Sorting(object sender, DataGridSortingEventArgs e)
         {
             e.Handled = true; // prevent in memory sorting

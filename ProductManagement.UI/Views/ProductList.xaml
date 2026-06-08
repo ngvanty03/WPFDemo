@@ -154,13 +154,10 @@
                 </Style>
             </TextBlock.Style>
         </TextBlock>
-        <TextBlock Margin="0,50,0,0" Text="Loading ..." 
-               Grid.Row="2" 
-Grid.Column="0" 
-Grid.ColumnSpan="4" HorizontalAlignment="Center"
-VerticalAlignment="Top" Foreground="#5599FF" FontSize="18" FontWeight="SemiBold">
+        <TextBlock Margin="0,50,0,0" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" 
+                   HorizontalAlignment="Center" VerticalAlignment="Top">
             <TextBlock.Style>
-                <Style TargetType="TextBlock">
+                <Style TargetType="TextBlock" BasedOn="{StaticResource LoadingTextBlockStyle}">
                     <Setter Property="Visibility" Value="Collapsed"/>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsLoading}" Value="True">

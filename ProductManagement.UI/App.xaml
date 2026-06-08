@@ -62,5 +62,12 @@
 
             </Style.Resources>
         </Style>
+        <Style x:Key="LoadingTextBlockStyle" TargetType="TextBlock" >           
+            <Setter Property="TextWrapping" Value="WrapWithOverflow" />            
+            <Setter Property="Foreground" Value="#5599FF" />
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Text" Value="Loading..." />
+        </Style>
     </Application.Resources>
 </Application>

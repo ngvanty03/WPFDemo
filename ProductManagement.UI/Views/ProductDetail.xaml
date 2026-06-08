@@ -78,11 +78,10 @@ Text="Description:" VerticalAlignment="Center"/>
         </StackPanel>
         <TextBlock Margin="10,10,0,0" Grid.Row="5" Grid.Column="1" TextWrapping="WrapWithOverflow" Foreground="Red" FontSize="18" FontWeight="SemiBold"
                  Grid.ColumnSpan="4" Text="{Binding ErrorMessage}"></TextBlock>
-        <TextBlock Margin="10,10,0,0" Grid.Row="5" Grid.Column="1" Text="Loading..." TextWrapping="WrapWithOverflow"
-Grid.ColumnSpan="4" HorizontalAlignment="Left"
-VerticalAlignment="Top" Foreground="#5599FF" FontSize="18" FontWeight="SemiBold">
+        <TextBlock Margin="10,10,0,0" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="4" 
+                   HorizontalAlignment="Left" VerticalAlignment="Top">
             <TextBlock.Style>
-                <Style TargetType="TextBlock">
+                <Style TargetType="TextBlock" BasedOn="{StaticResource LoadingTextBlockStyle}">
                     <Setter Property="Visibility" Value="Collapsed"/>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsLoading}" Value="True">

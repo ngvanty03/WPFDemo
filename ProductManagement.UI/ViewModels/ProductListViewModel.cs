@@ -87,8 +87,8 @@ namespace ProductManagement.UI.ViewModel
             IsLoading = true;
             try
             {
-                await InitCategoryAsyn();
-                await LoadProductAsyn();
+                await InitCategoryAsync();
+                await LoadProductAsync();
             }
             catch (Exception ex)
             {
@@ -102,7 +102,7 @@ namespace ProductManagement.UI.ViewModel
         /// Load category data
         /// </summary>
         /// <returns></returns>
-        private async Task InitCategoryAsyn()
+        private async Task InitCategoryAsync()
         {
             var result = await _productCateService.GetAllActiveAsync();
             var tempList = new List<ProductCategoryDTO>
@@ -122,7 +122,7 @@ namespace ProductManagement.UI.ViewModel
             try
             {
                 ResetPageData();
-                await LoadProductAsyn();
+                await LoadProductAsync();
             }
             catch (Exception ex)
             {
@@ -138,7 +138,7 @@ namespace ProductManagement.UI.ViewModel
         /// Load product from DB
         /// </summary>
         /// <returns></returns>
-        public async Task LoadProductAsyn()
+        public async Task LoadProductAsync()
         {
             var result = await _productService.SearchAsync(SelectedCategoryId, SearchSKU, PagingParameter.CurrentPage, PagingParameter.PageSize, SortingParameter.SortColumn, SortingParameter.SortDirection);
             Products = new ObservableCollection<ProductDTO>(result.Items);
@@ -155,7 +155,7 @@ namespace ProductManagement.UI.ViewModel
             try
             {
                 PagingParameter.NextPage();
-                await LoadProductAsyn();
+                await LoadProductAsync();
             }
             catch (Exception ex)
             {
@@ -176,7 +176,7 @@ namespace ProductManagement.UI.ViewModel
             try
             {
                 PagingParameter.PrevPage();
-                await LoadProductAsyn();
+                await LoadProductAsync();
             }
             catch (Exception ex)
             {
@@ -198,7 +198,7 @@ namespace ProductManagement.UI.ViewModel
                 SelectedCategoryId = 0;
                 SearchSKU = "";
                 ResetPageData();
-                await LoadProductAsyn();
+                await LoadProductAsync();
             }
             catch (Exception ex)
             {
@@ -220,7 +220,7 @@ namespace ProductManagement.UI.ViewModel
             try
             {
                 await _productService.DeleteAsync(product.Id);
-                await LoadProductAsyn();
+                await LoadProductAsync();
             }
             catch (Exception ex)
             {
@@ -244,7 +244,7 @@ namespace ProductManagement.UI.ViewModel
             {
                 SortingParameter.UpdateState(e.Column.SortMemberPath);
                 PagingParameter.CurrentPage = 1;
-                await LoadProductAsyn();
+                await LoadProductAsync();
             }
             catch (Exception ex)
             {
@@ -274,7 +274,7 @@ namespace ProductManagement.UI.ViewModel
             var subFormOpen = _dialogService.ShowProductDetailForm(product?.Id ?? 0);//product is null --> get value = 0 
             if (subFormOpen != null && subFormOpen.Value)
             {
-                await LoadProductAsyn();
+                await LoadProductAsync();
             }
         }
         /// <summary>
@@ -288,7 +288,7 @@ namespace ProductManagement.UI.ViewModel
             if (confirm)
             {
                 await _productService.DeleteAsync(product.Id);
-                await LoadProductAsyn();
+                await LoadProductAsync();
             }
         }
         #endregion

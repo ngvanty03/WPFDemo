@@ -41,7 +41,7 @@ namespace ProductManagement.UI.ViewModel
         private int _selectedCategoryId;
 
         [ObservableProperty] 
-        private ObservableCollection<ProductDTO> _products = new();
+        private CustomObservableCollection<ProductDTO> _products = new();
 
         [ObservableProperty] 
         private bool _foundData=true;
@@ -99,7 +99,7 @@ namespace ProductManagement.UI.ViewModel
         public async Task LoadProductAsync()
         {
             var result = await _productService.SearchAsync(SelectedCategoryId, SearchSKU, PagingParameter.CurrentPage, PagingParameter.PageSize, SortingParameter.SortColumn, SortingParameter.SortDirection);
-            Products = new ObservableCollection<ProductDTO>(result.Items);
+            Products.ReplaceRange(result.Items);
             FoundData = Products.Count > 0;
             PagingParameter.UpdateState(result.TotalCount);
         }        

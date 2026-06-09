@@ -67,8 +67,10 @@ namespace ProductManagement.UI.ViewModel
             IsLoading = true;
             try
             {
-                await InitCategoryAsync();
-                await LoadProductAsync();
+                //load Category and Product in parallel mode
+                Task initCateTask= InitCategoryAsync();
+                Task initProductListTask = LoadProductAsync();
+                await Task.WhenAll(initCateTask, initCateTask);
             }
             catch (Exception ex)
             {

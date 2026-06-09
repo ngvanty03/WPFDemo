@@ -82,8 +82,8 @@
             </cc:CustomPagingControl>
         </Grid>        
         <DataGrid TabIndex="6" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Margin="0,4,0,0"
-                  CanUserAddRows="False"
-                   IsReadOnly="True"
+                  CanUserAddRows="False" CanUserResizeColumns="False" CanUserResizeRows="False"
+                    IsReadOnly="True"
                    EnableRowVirtualization="True" VirtualizingPanel.IsVirtualizing="True"
                    VirtualizingPanel.VirtualizationMode="Recycling"
                    ItemsSource="{Binding Products}" AutoGenerateColumns="False"

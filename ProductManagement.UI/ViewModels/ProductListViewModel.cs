@@ -41,7 +41,7 @@ namespace ProductManagement.UI.ViewModel
         private int _selectedCategoryId;
 
         [ObservableProperty] 
-        private CustomObservableCollection<ProductDTO> _products = new();
+        private CustomObservableCollection<ProductListDTO> _products = new();
 
         [ObservableProperty] 
         private bool _foundData=true;
@@ -147,7 +147,7 @@ namespace ProductManagement.UI.ViewModel
         /// <param name="product"></param>
         /// <returns></returns>
         [RelayCommand]
-        public async Task DeleteAsync(ProductDTO? product)
+        public async Task DeleteAsync(ProductListDTO? product)
         {
             var confirm = _dialogService.Confirm($"Do you want to delete the product SKU:{product.SKU}?");
             if (confirm)
@@ -162,7 +162,7 @@ namespace ProductManagement.UI.ViewModel
         /// <param name="product"></param>
         /// <returns></returns>
         [RelayCommand]
-        public async Task ShowProductDetailAsync(ProductDTO? product)
+        public async Task ShowProductDetailAsync(ProductListDTO? product)
         {
             var subFormOpen = _dialogService.ShowProductDetailForm(product?.Id ?? 0);//product is null --> get value = 0 
             if (subFormOpen != null && subFormOpen.Value)

@@ -107,7 +107,7 @@ namespace ProductManagement.Infrastructure
         /// <param name="categoryId"></param>
         /// <param name="SKU"></param>
         /// <returns></returns>
-        public async Task<(IEnumerable<ProductDTO> Items, int TotalCount)> SearchAsync(int categoryId, string SKU, int pageNumber, int pageSize, string sortColumn, string sortDirection)
+        public async Task<(IEnumerable<ProductListDTO> Items, int TotalCount)> SearchAsync(int categoryId, string SKU, int pageNumber, int pageSize, string sortColumn, string sortDirection)
         {
             if (pageNumber < 1)
                 pageNumber = 1;
@@ -137,7 +137,7 @@ namespace ProductManagement.Infrastructure
                 await connection.OpenAsync().ConfigureAwait(false);
                 var dbResult= await connection.QueryMultipleAsync(sql, parameters).ConfigureAwait(false);
                 var totalCount = await dbResult.ReadFirstAsync<int>().ConfigureAwait(false);
-                var items = await dbResult.ReadAsync<ProductDTO>().ConfigureAwait(false);
+                var items = await dbResult.ReadAsync<ProductListDTO>().ConfigureAwait(false);
                 return (items,totalCount);
             }
         }

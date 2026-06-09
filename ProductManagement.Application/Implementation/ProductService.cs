@@ -16,7 +16,7 @@ namespace ProductManagement.Application
         {
             return await _repo.DeleteAsync(productId).ConfigureAwait(false);
         }
-        public async Task<(IEnumerable<ProductDTO> Items, int TotalCount)> SearchAsync(int categoryId, string SKU, int pageNumber, int pageSize, string sortColumn, string sortDirection)
+        public async Task<(IEnumerable<ProductListDTO> Items, int TotalCount)> SearchAsync(int categoryId, string SKU, int pageNumber, int pageSize, string sortColumn, string sortDirection)
         {
             return await _repo.SearchAsync(categoryId, SKU,pageNumber,pageSize,sortColumn,sortDirection).ConfigureAwait(false);
         }
